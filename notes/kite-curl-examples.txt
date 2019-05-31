@@ -1,0 +1,149 @@
+step 1: get a S3 signed upload URL
+-----------------------------------
+curl -v "https://api.kite.ly/v4.0/asset/sign/?mime_types=image/jpeg&client_asset=true" \
+  -H "Authorization: ApiKey pk_test_3709e9b5859e9688a7e6ba9d45c8450afecb1f61:"
+
+
+result
+-------
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server did not agree to a protocol
+* Server certificate:
+*  subject: OU=Domain Control Validated; OU=EssentialSSL Wildcard; CN=*.kite.ly
+*  start date: Jun 12 00:00:00 2017 GMT
+*  expire date: Aug 10 23:59:59 2020 GMT
+*  subjectAltName: host "api.kite.ly" matched cert's "*.kite.ly"
+*  issuer: C=GB; ST=Greater Manchester; L=Salford; O=COMODO CA Limited; CN=COMODO RSA Domain Validation Secure Server CA
+*  SSL certificate verify ok.
+> GET /v4.0/asset/sign/?mime_types=image/jpeg&client_asset=true HTTP/1.1
+> Host: api.kite.ly
+> User-Agent: curl/7.54.0
+> Accept: */*
+> Authorization: ApiKey pk_test_3709e9b5859e9688a7e6ba9d45c8450afecb1f61:
+> 
+< HTTP/1.1 200 OK
+< Connection: keep-alive
+< Content-Type: application/json
+< Date: Sat, 18 May 2019 00:30:21 GMT
+< Server: waitress
+< Strict-Transport-Security: max-age=3600; includeSubDomains
+< Transfer-Encoding: chunked
+< Vary: Cookie
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-Xss-Protection: 1; mode=block
+< Via: 1.1 vegur
+< 
+* Connection #0 to host api.kite.ly left intact
+{"signed_requests": ["https://s3-eu-west-1.amazonaws.com/co.oceanlabs.ps/live/49932/5699095.jpeg?AWSAccessKeyId=AKIAIYDBE4WZIQ6V5FAQ&Expires=1558143021&Signature=qZPHs3skXKlDBgj4E2T3PeEvCxo%3D"], "urls": ["https://s3-eu-west-1.amazonaws.com/co.oceanlabs.ps/live/49932/5699095.jpeg"], "asset_ids": [5699095]}
+
+
+
+step 2: upload jpeg to S3
+--------------------------
+curl -v --upload-file "/Users/jhancock/Desktop/IMG_1888.jpg" \
+    -H "Content-Type:image/jpeg" \
+    -H "x-amz-acl:private" \
+    "https://s3-eu-west-1.amazonaws.com/co.oceanlabs.ps/live/49932/5699095.jpeg?AWSAccessKeyId=AKIAIYDBE4WZIQ6V5FAQ&Expires=1558143021&Signature=qZPHs3skXKlDBgj4E2T3PeEvCxo%3D"
+
+result
+--------
+> PUT /co.oceanlabs.ps/live/49932/5699095.jpeg?AWSAccessKeyId=AKIAIYDBE4WZIQ6V5FAQ&Expires=1558143021&Signature=qZPHs3skXKlDBgj4E2T3PeEvCxo%3D HTTP/1.1
+> Host: s3-eu-west-1.amazonaws.com
+> User-Agent: curl/7.54.0
+> Accept: */*
+> Content-Type:image/jpeg
+> x-amz-acl:private
+> Content-Length: 960411
+> Expect: 100-continue
+> 
+< HTTP/1.1 100 Continue
+* We are completely uploaded and fine
+< HTTP/1.1 200 OK
+< x-amz-id-2: +Mf6FkJhmrZerElY0/5DUiFcFUqmUPrHi1FLJXwnpGL6NUcei0lVjUHD5mpuuQj1UvjQSgGWuBc=
+< x-amz-request-id: 4A2DD0E11A9FE0C4
+< Date: Sat, 18 May 2019 00:31:39 GMT
+< ETag: "3b80124f8c3c98c208e18907bff8b0a8"
+< Content-Length: 0
+< Server: AmazonS3
+< 
+* Connection #0 to host s3-eu-west-1.amazonaws.com left intact
+
+
+step 3: order postcard
+-----------------------
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server did not agree to a protocol
+* Server certificate:
+*  subject: C=US; ST=Washington; L=Seattle; O=Amazon.com Inc.; CN=*.s3-eu-west-1.amazonaws.com
+*  start date: Nov  8 00:00:00 2018 GMT
+*  expire date: Nov  6 12:00:00 2019 GMT
+*  subjectAltName: host "s3-eu-west-1.amazonaws.com" matched cert's "s3-eu-west-1.amazonaws.com"
+*  issuer: C=US; O=DigiCert Inc; OU=www.digicert.com; CN=DigiCert Baltimore CA-2 G2
+*  SSL certificate verify ok.
+curl -v "https://api.kite.ly/v4.0/print/" \
+  -H "Authorization: ApiKey pk_test_3709e9b5859e9688a7e6ba9d45c8450afecb1f61:sk_test_86badd869f57c6ab517f5621807c674c3dbce553" \
+  --data '{
+    "shipping_address": {
+      "recipient_name": "Jon Hancock",
+      "address_line_1": "157 Breaker Bay Rd",
+      "address_line_2": "Breaker Bay",
+      "city": "Wellington",
+      "county_state": "Wellington",
+      "postcode": "6022",
+      "country_code": "NZL"
+    },
+    "customer_email": "jhancock@shellshadow.com",
+    "customer_phone": "+64 (0)2102916167",
+    "customer_payment": {
+      "amount": 3.95,
+      "currency": "USD"
+    },
+    "jobs": [{
+      "assets": {
+        "front_image": "https://s3-eu-west-1.amazonaws.com/co.oceanlabs.ps/live/49932/5699095.jpeg"
+      },
+      "template_id": "postcard",
+      "message": "Test curl verbose Rock Rainbow!"
+    }]
+  }'
+
+result
+-------
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server did not agree to a protocol
+* Server certificate:
+*  subject: OU=Domain Control Validated; OU=EssentialSSL Wildcard; CN=*.kite.ly
+*  start date: Jun 12 00:00:00 2017 GMT
+*  expire date: Aug 10 23:59:59 2020 GMT
+*  subjectAltName: host "api.kite.ly" matched cert's "*.kite.ly"
+*  issuer: C=GB; ST=Greater Manchester; L=Salford; O=COMODO CA Limited; CN=COMODO RSA Domain Validation Secure Server CA
+*  SSL certificate verify ok.
+> POST /v4.0/print/ HTTP/1.1
+> Host: api.kite.ly
+> User-Agent: curl/7.54.0
+> Accept: */*
+> Authorization: ApiKey pk_test_3709e9b5859e9688a7e6ba9d45c8450afecb1f61:sk_test_86badd869f57c6ab517f5621807c674c3dbce553
+> Content-Length: 685
+> Content-Type: application/x-www-form-urlencoded
+> 
+* upload completely sent off: 685 out of 685 bytes
+< HTTP/1.1 200 OK
+< Connection: keep-alive
+< Content-Type: application/json
+< Date: Sat, 18 May 2019 00:34:11 GMT
+< Server: waitress
+< Strict-Transport-Security: max-age=3600; includeSubDomains
+< Transfer-Encoding: chunked
+< Vary: Cookie
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: SAMEORIGIN
+< X-Xss-Protection: 1; mode=block
+< Via: 1.1 vegur
+< 
+* Connection #0 to host api.kite.ly left intact
+{"print_order_id": "PS138-111609811"}
+
