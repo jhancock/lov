@@ -16,6 +16,8 @@ defmodule LovWeb.Router do
   scope "/", LovWeb do
     pipe_through :browser
 
+    resources "/uploads", UploadController, only: [:index, :new, :create, :show]
+
     get "/", PageController, :index
   end
 

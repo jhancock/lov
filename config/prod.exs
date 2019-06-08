@@ -17,6 +17,9 @@ config :lov, LovWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :lov,
+  uploads_directory: System.get_env("LOV_UPLOADS_DIRECTORY")
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
