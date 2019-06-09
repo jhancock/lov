@@ -1,4 +1,4 @@
-~defmodule Kite.Asset do
+defmodule Kite.Asset do
   # kite.ly stores assets (images) e.g. to send a postcard
   # This module is used to interface with kite.ly's API and upload the image to kite.ly's signed s3 url
 

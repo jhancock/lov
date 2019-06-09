@@ -191,3 +191,39 @@ sudo apt-mark hold postgresql-11
 
 # https://code.visualstudio.com/docs/remote/ssh#_getting-started
 
+##########################
+##  Install nginx       ##
+##########################
+
+sudo apt update
+sudo apt install nginx
+
+# copy ssl cert and key from ~/Documents/lov_docs/ssl_20190609
+# put together bundle
+# https://helpdesk.ssls.com/hc/en-us/articles/203427642-How-to-install-an-SSL-certificate-on-a-NGINX-server
+# see readme.txt in ~/Documents/lov_docs/ssl_20190609/lov_is
+# from ~/Documents/lov_docs/ssl_20190609
+scp lov_is_20190609.key lov@daai:~/certs/.
+# from ~/Documents/lov_docs/ssl_20190609/lov_is
+scp lov_is_20190609_full_bundle.crt lov@daai:~/certs/.
+
+# https://www.linode.com/docs/web-servers/nginx/tls-deployment-best-practices-for-nginx/
+# cp original nginc.conf
+cd /etc/nginx
+sudo cp nginx.conf nginx.conf.original
+cd sites-available
+sudo cp default default.original
+# we will use the newer method of including from directory conf.d instead of sites-available and sites-enabled
+
+# remove symlink in sites-enabled
+sudo rm /etc/nginx/sites-enabled/default
+
+sudo cp /home/lov/lov/notes/nginx/nginx.conf /etc/nginx/.
+sudo cp /home/lov/lov/notes/nginx/lov_is.conf /etc/nginx/conf.d/.
+
+# reload configs
+# sudo nginx -s reload
+sudo service nginx restart
+
+# run test  https://www.ssllabs.com/ssltest/analyze.html?d=lov.is
+

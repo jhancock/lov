@@ -13,7 +13,7 @@ defmodule LovWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", LovWeb do
+  scope "/pandaai", LovWeb do
     pipe_through :browser
 
     resources "/uploads", UploadController, only: [:index, :new, :create, :show]
