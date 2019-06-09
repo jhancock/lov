@@ -75,6 +75,6 @@ config :lov, Lov.Repo,
   pool_size: 10
 
 config :lov,
-  uploads_directory: "/Users/jhancock/lov_uploads"
+  uploads_directory: "/home/lov/lov_uploads"
 
 import_config "dev.secret.exs"
