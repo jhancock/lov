@@ -36,6 +36,7 @@ defmodule Kite.Address do
       recipient_name: "Kathleen Kaye",
       address_line_1: "P.O. Box 4062",
       city: "Dublin",
+      county_state: "Georgia",
       postcode: "31040",
       country_code: "USA"
     }

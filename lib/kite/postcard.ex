@@ -19,6 +19,21 @@ defmodule Kite.Postcard do
     Mojito.post(print_api_url, headers, payload)
   end
 
+  def send_self_hosted(address, message, file_name, api_mode) do
+    # upload front_image_path to s3
+    # s3_asset_url = Asset.upload_image(front_image_path, api_mode)
+    # print the postcard
+    print_api_url = "https://api.kite.ly/v4.0/print/"
+    %ApiKeys{public: public_key, secret: secret_key} = ApiKeys.get(api_mode)
+    headers = [
+      {"authorization", "ApiKey #{public_key}:#{secret_key}"}, 
+      {"content-type", "application/json"}
+    ]
+    image_url = "https://lov.is/spicyplant51/#{file_name}"
+    payload = create_payload(address, message, image_url) |> Jason.encode!
+    Mojito.post(print_api_url, headers, payload)
+  end
+
   def create_payload(address, message, s3_asset_url) do
     %{
       "shipping_address" => address,
