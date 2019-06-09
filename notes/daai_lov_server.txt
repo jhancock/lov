@@ -1,0 +1,193 @@
+# daai.lov.is  165.227.5.233
+
+# create new ssh keys for this server
+ssh-keygen -o -a 100 -t ed25519 -f ~/.ssh/jhancock_lov_20190606 -C "jhancock@shellshadow.com"
+# new keys for gitlab
+ssh-keygen -o -a 100 -t ed25519 -f ~/.ssh/jhancock_gitlab_20190609 -C "jhancock@shellshadow.com"
+# copy public key to MacOS clupboard
+pbcopy < ~/.ssh/jhancock_gitlab_20190609.pub
+
+# as root
+# set timezone to 'Etc/UTC'
+# dpkg-reconfigure tzdata
+# should have tried to newer method and checked first
+# https://help.ubuntu.com/lts/serverguide/NTP.html.en
+timedatectl status
+
+# check hostname
+hostname
+# set hostname, if needed - already set
+# sudo vim /etc/hostname
+# hostname -F /etc/hostname
+
+# update system
+sudo apt update
+sudo apt upgrade
+sudo apt autoremove
+
+# install editor.   already installed
+#sudo apt install vim-tiny
+
+# add user jhancock
+sudo adduser jhancock
+sudo adduser jhancock sudo
+sudo adduser lov
+sudo adduser lov sudo
+
+# byobu - already installed
+byobu-config  # choose to enable byobu at login
+# F-9 -> Change Escape Sequence, set to Ctr-S so Ctr-A works for beginning of line
+
+# install digitalocean montioring agent
+# https://www.digitalocean.com/docs/monitoring/how-to/install-agent/
+# https://www.digitalocean.com/docs/monitoring/how-to/upgrade-legacy-agent/
+curl -sSL https://insights.nyc3.cdn.digitaloceanspaces.com/install.sh | sudo bash
+
+# setup ssh keys for users jhancock and lov
+[server] mkdir ~/.ssh && chmod 700 ~/.ssh
+[client] scp ~/.ssh/jhancock_lov_20190606.pub jhancock@daai:~/.ssh
+[server] cat ~/.ssh/jhancock_lov_20190606.pub > ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+
+# config sshd
+sudo vim /etc/ssh/sshd_config
+# edit:
+Port 22 -> Port 2666
+PermitRootLogin yes -> PermitRootLogin no
+PasswordAuthentication yes -> PasswordAuthentication no
+
+# change client ~/.ssh/config to ref hostname, port and keys.
+# restart sshd
+sudo service ssh restart
+
+# enable access to gitlab from user lov
+vim ~/.ssh/config
+# add:
+Host gitlab.com
+  Compression yes
+  HostName gitlab.com
+  IdentityFile ~/.ssh/jhancock_2016_12_1
+
+#TODO change gitlab key above to new one
+# copy the keys to server
+[client] scp ~/.ssh/jhancock_2016_12_1* lov@daai:~/.ssh
+[client] scp ~/.ssh/jhancock_gitlab_20190609* lov@daai:~/.ssh
+
+# copy mac's .gitconfig and .gitignore_global to lov@daai
+[client] scp ~/.gitconfig lov@daai:~/.
+# edit line: excludesfile = /Users/jhancock/.gitignore_global
+[client] scp ~/.gitignore_global lov@daai:~/.
+
+#######################################
+##  Install erlang, elixir and node  ##
+#######################################
+
+# https://elixir-lang.org/install.html#unix-and-unix-like
+wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && sudo dpkg -i erlang-solutions_1.0_all.deb
+sudo apt-get update
+sudo apt-get install esl-erlang
+sudo apt-get install elixir
+
+# https://hexdocs.pm/phoenix/installation.html
+mix local.hex
+mix archive.install hex phx_new 1.4.6
+
+# install inotify for live reload of file changes for phoenix dev mode 
+# https://github.com/rvoicilas/inotify-tools/wiki
+sudo apt-get install inotify-tools
+
+# install node.js
+# https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions-enterprise-linux-fedora-and-snap-packages
+$ the above link tells us to install for ubuntu from https://github.com/nodesource/distributions/blob/master/README.md#debinstall
+
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# the above outputs:
+## Run `sudo apt-get install -y nodejs` to install Node.js 12.x and npm
+## You may also need development tools to build native addons:
+     sudo apt-get install gcc g++ make
+## To install the Yarn package manager, run:
+     curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+     sudo apt-get update && sudo apt-get install yarn
+
+#instead of installing gcc directly as commented aboce, install build-essential
+# sudo apt-get install gcc g++ make
+sudo apt install -y build-essential
+
+sudo apt-get install -y nodejs
+
+# clone lov repo
+git clone git@gitlab.com:jonhancock/lov.git
+
+# copy dev.secret.exs prod.secret.exs and shared.secret.exs
+scp ~/lov/config/*.secret.exs lov@daai:~/lov/config/.
+
+# setup postgres first ;)
+cd ~/lov
+mix deps.get
+mix ecto.setup
+cd assets && npm install
+# npm install shows some vulnerability warnings.
+# run `npm audit fix` to fix them, or `npm audit` for details
+# skipping this for now as I shouldn't need to worry on this dev server and can look into the implications on phoenix and webpack later
+
+# remote iex.  attach to another erlang node
+# https://broot.ca/erlang-remsh-is-dangerous
+# https://stackoverflow.com/questions/38491614/attach-an-iex-session-to-running-elixir-otp-process
+# http://joeellis.la/iex-remsh-shells/
+
+
+##########################
+##  Install postgresql  ##
+##########################
+
+sudo apt-get install ca-certificates
+curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+sudo apt-get update
+sudo apt-get install postgresql-11
+
+# start postgres
+# pg_ctlcluster 11 main start
+
+# stop postgres
+# sudo systemctl stop postgresql@11-main
+# sudo systemctl restart postgresql@11-main
+
+# ensure postgres doesn't auto-upgrade
+sudo apt-mark hold postgresql-11
+# Remove the hold:
+# sudo apt-mark unhold postgresql-11
+
+# connect to psql
+# sudo su - postgres
+# psql
+# set password to postgres
+# \password 
+
+# enable connecting to psql form other user accounts
+# https://gist.github.com/AtulKsol/4470d377b448e56468baef85af7fd614
+# edit /etc/postgresql/11/main/pg_hba.conf
+# change first line:
+# Database administrative login by Unix domain socket
+# local   	all             postgres     peer
+# to:
+# local  	all      		postgres     md5
+
+# now try to connect with psql from user lov
+# lov> psql -U postgres
+
+##########################
+##  VS Code remote dev  ##
+##########################
+
+# set terminal font
+# https://code.visualstudio.com/docs/editor/integrated-terminal
+# https://code.visualstudio.com/docs/getstarted/settings
+# in VS Code, Preferences -> Setting, search for terminal.integrated.fontSize
+
+# https://code.visualstudio.com/docs/remote/ssh#_getting-started
+
