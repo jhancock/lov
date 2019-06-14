@@ -132,11 +132,22 @@ cd assets && npm install
 # run `npm audit fix` to fix them, or `npm audit` for details
 # skipping this for now as I shouldn't need to worry on this dev server and can look into the implications on phoenix and webpack later
 
+# setup app and erlang for hhtps (without nginx)
+# https://github.com/elixir-plug/plug/blob/master/guides/https.md
+
+# stop and disable nginx if its installed
+# sudo service nginx stop
+# sudo systemctl disable nginx
+
+# enable erlang vm to bind to ports below 1024
+sudo setcap 'cap_net_bind_service=+ep' /usr/lib/erlang/erts-10.4.1/bin/beam.smp
+
+
+
 # remote iex.  attach to another erlang node
 # https://broot.ca/erlang-remsh-is-dangerous
 # https://stackoverflow.com/questions/38491614/attach-an-iex-session-to-running-elixir-otp-process
 # http://joeellis.la/iex-remsh-shells/
-
 
 ##########################
 ##  Install postgresql  ##
@@ -224,6 +235,45 @@ sudo cp /home/lov/lov/notes/nginx/lov_is.conf /etc/nginx/conf.d/.
 # reload configs
 # sudo nginx -s reload
 sudo service nginx restart
+# sudo service nginx stop
+# systemctl list-units --all --type=service --no-pager
+# sudo systemctl disable nginx
 
 # run test  https://www.ssllabs.com/ssltest/analyze.html?d=lov.is
+
+##############################
+##  SSL generate csr notes  ##
+##############################
+
+namecheap csr and ssl tools
+https://decoder.link/csr_generator
+
+openssl req -new -newkey rsa:2048 -nodes -keyout lov_is.key -out lov_is.csr
+>>>>>>
+jhancock@bigmac:~$ openssl req -new -newkey rsa:2048 -nodes -keyout lov_is.key -out lov_is.csr
+Generating a 2048 bit RSA private key
+.+++
+............................+++
+writing new private key to 'lov_is.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) []:US
+State or Province Name (full name) []:
+Locality Name (eg, city) []:
+Organization Name (eg, company) []:Lov LLC
+Organizational Unit Name (eg, section) []:
+Common Name (eg, fully qualified host name) []:lov.is
+Email Address []:jhancock@shellshadow.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+
+<<<<<<<<
 

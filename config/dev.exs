@@ -7,7 +7,15 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :lov, LovWeb.Endpoint,
-  http: [port: 4000],
+  http: [:inet6, port: 80],
+  url: [host: "lov.is", port: 443],
+  https: [
+        :inet6,
+        port: 443,
+        cipher_suite: :strong,
+        keyfile: "/home/lov/certs/lov_is_20190609.key",
+        certfile: "/home/lov/certs/lov_is_20190609_full_bundle.crt"
+      ],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
