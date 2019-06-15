@@ -25,7 +25,7 @@ config :lov, LovWeb.Endpoint,
         cacertfile: "/home/lov/certs/lov_is_20190609.ca-bundle",
         dhfile: "/home/lov/certs/dhparams.pem"
       ],
-  # force_ssl: [hsts: true],
+  force_ssl: [hsts: true],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
