@@ -134,6 +134,7 @@ cd assets && npm install
 
 # setup app and erlang for hhtps (without nginx)
 # https://github.com/elixir-plug/plug/blob/master/guides/https.md
+# https://hexdocs.pm/plug/Plug.SSL.html#configure/1
 
 # stop and disable nginx if its installed
 # sudo service nginx stop
@@ -141,6 +142,15 @@ cd assets && npm install
 
 # enable erlang vm to bind to ports below 1024
 sudo setcap 'cap_net_bind_service=+ep' /usr/lib/erlang/erts-10.4.1/bin/beam.smp
+
+# create custom set of Diffie-Hellman parameters
+openssl dhparam -out dhparams.pem 4096
+
+# uncomment ssl options... see dev.exs and prod.exs
+
+
+# https://elixirforum.com/t/proper-way-to-enforce-https-only/2117/5
+# https://spin.atomicobject.com/2018/03/07/force-ssl-phoenix-framework/
 
 
 
@@ -239,7 +249,8 @@ sudo service nginx restart
 # systemctl list-units --all --type=service --no-pager
 # sudo systemctl disable nginx
 
-# run test  https://www.ssllabs.com/ssltest/analyze.html?d=lov.is
+# run test  
+https://www.ssllabs.com/ssltest/analyze.html?d=lov.is
 
 ##############################
 ##  SSL generate csr notes  ##

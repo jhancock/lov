@@ -14,8 +14,11 @@ config :lov, LovWeb.Endpoint,
         port: 443,
         cipher_suite: :strong,
         keyfile: "/home/lov/certs/lov_is_20190609.key",
-        certfile: "/home/lov/certs/lov_is_20190609_full_bundle.crt"
+        certfile: "/home/lov/certs/lov_is_20190609.crt",
+        cacertfile: "/home/lov/certs/lov_is_20190609.ca-bundle",
+        dhfile: "/home/lov/certs/dhparams.pem"
       ],
+  # force_ssl: [hsts: true],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
