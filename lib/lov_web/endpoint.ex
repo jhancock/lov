@@ -1,6 +1,21 @@
 defmodule LovWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :lov
 
+  plug(:canonical_host)
+
+  defp canonical_host(conn, _opts) do
+    :lov
+    |> Application.get_env(:canonical_host)
+    |> case do
+      host when is_binary(host) ->
+        opts = PlugCanonicalHost.init(canonical_host: host)
+        PlugCanonicalHost.call(conn, opts)
+
+      _ ->
+        conn
+    end
+  end
+
   socket "/socket", LovWeb.UserSocket,
     websocket: true,
     longpoll: false

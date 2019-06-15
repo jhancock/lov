@@ -33,6 +33,7 @@ defmodule Lov.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:plug_canonical_host, "~> 1.0"},
       {:mojito, "~> 0.3.0"},
       {:phoenix, "~> 1.4.3"},
       {:phoenix_pubsub, "~> 1.1"},

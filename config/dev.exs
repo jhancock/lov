@@ -1,5 +1,12 @@
 use Mix.Config
 
+# eventually need to seperate dev.lov.is from production
+# https://github.com/remiprev/plug_canonical_host
+# https://sublimecoding.com/how-to-canonicalize-a-domain-in-elixir-phoenix-framework/
+# https://sublimecoding.com/301-redirects-in-phoenix/
+config :lov,
+  canonical_host: "lov.is"
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
