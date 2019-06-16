@@ -87,6 +87,14 @@ sudo apt-get update
 sudo apt-get install esl-erlang
 sudo apt-get install elixir
 
+# going to need imagemagick
+sudo apt install imagemagick
+
+# webpack or whatever hits the limit with inotify.  default is 8192 which isn't enough
+# https://github.com/guard/listen/wiki/Increasing-the-amount-of-inotify-watchers
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
 # https://hexdocs.pm/phoenix/installation.html
 mix local.hex
 mix archive.install hex phx_new 1.4.6

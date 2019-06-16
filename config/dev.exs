@@ -69,8 +69,11 @@ config :lov, LovWeb.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/lov_web/{live,views}/.*(ex)$",
-      ~r"lib/lov_web/templates/.*(eex)$"
+      ~r"lib/lov_web/{live,views,controllers}/.*(ex)$",
+      ~r"lib/lov_web/templates/.*(eex)$",
+      ~r"lib/lov/.*(ex)$",
+      ~r"lib/lov/{documents}/.*(ex)$",
+      ~r"lib/kite/.*(ex)$"
     ]
   ]
 
@@ -93,6 +96,6 @@ config :lov, Lov.Repo,
   pool_size: 10
 
 config :lov,
-  uploads_directory: "/home/lov/lov_uploads"
+  upload_directory: "/home/lov/upload"
 
 import_config "dev.secret.exs"
