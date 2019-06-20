@@ -158,6 +158,43 @@ https://www.ssllabs.com/ssltest/analyze.html?d=lov.is
 # https://stackoverflow.com/questions/38491614/attach-an-iex-session-to-running-elixir-otp-process
 # http://joeellis.la/iex-remsh-shells/
 
+###################################
+##  add tailwind css to phoenix  ##
+###################################
+
+# add tailwind css
+# https://www.derrickreimer.com/tech/2019/06/12/tailwind-phoenix.html
+cd assets
+npm install tailwindcss --save-dev
+npm install postcss-loader --save-dev
+
+# create file assets/postcss.config.js:
+module.exports = {
+   plugins: [
+    require('tailwindcss'),
+    require('autoprefixer')
+  ]
+}
+
+# edit assets/webpack.config.js:
+     use: [MiniCssExtractPlugin.loader, 
+          { loader: 'css-loader', options: { importLoaders: 1 } },
+          'postcss-loader']
+
+# edit assets/css/app.css
+add:
+     @tailwind base;
+     @tailwind components;
+     /* Put your custom components here */
+     @tailwind utilities;
+     /* Put your custom utilities here */
+
+# add customize file https://tailwindcss.com/docs/configuration
+cd assets
+npx tailwind init
+
+# TODO: ensure tailwind files are stripped down for production.
+
 ##########################
 ##  Install postgresql  ##
 ##########################
