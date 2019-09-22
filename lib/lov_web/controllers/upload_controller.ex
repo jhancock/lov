@@ -1,35 +1,43 @@
 defmodule LovWeb.UploadController do
   use LovWeb, :controller
 
-  alias Lov.Documents
-  alias Lov.Documents.Upload
+  alias Lov.ImageManager
+  alias Lov.Image
 
   def index(conn, _params) do
-  	uploads = Documents.list_uploads()
+  	uploads = ImageManager.list_images()
   	render(conn, "index.html", uploads: uploads)
   end
 
   def create(conn, %{"upload" => %Plug.Upload{}=upload}) do
-  	case Documents.create_upload_from_plug_upload(upload) do
-  		{:ok, upload}->
+  	case ImageManager.create_image_from_plug_upload(upload) do
+  		{:ok, _image} ->
   			conn
-        |> put_flash(:info, "file uploaded correctly")
-  			|> redirect(to: Routes.upload_path(conn,:index))
-  		{:error, reason}->
+        |> put_flash(:info, "image uploaded correctly")
+  			|> redirect(to: Routes.upload_path(conn, :index))
+  		{:error, reason} ->
         conn
   			|> put_flash(:error, "error upload file: #{inspect(reason)}")
-  			|> redirect(to: Routes.upload_path(conn, :new))
+  			|> redirect(to: Routes.upload_path(conn, :index))
   	end
   end
 
   def show(conn, %{"id" => id}) do
-    upload = Documents.get_upload!(id)
-    local_path = Upload.local_path(upload.id, upload.filename)
-    send_download conn, {:file, local_path}, filename: upload.filename
+    image = ImageManager.get_image!(id)
+    local_path = Image.uuid_filepath(image.original_uuid)
+    send_download conn, {:file, local_path}, filename: image.filename
+  end
+
+  def original(conn, %{"upload_id" => id}) do
+    image = ImageManager.get_image!(id)
+    local_path = Image.uuid_filepath(image.original_uuid)
+    conn
+    |> put_resp_content_type("image/jpeg")
+    |> send_file(200, local_path)  
   end
 
   def thumbnail(conn, %{"upload_id" => id}) do
-    thumb_path = Upload.thumbnail_path(id)
+    thumb_path = Image.uuid_filepath(id)
     conn
     |> put_resp_content_type("image/jpeg")
     |> send_file(200, thumb_path)

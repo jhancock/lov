@@ -23,17 +23,19 @@ defmodule Lov.Documents do
 		 	File.stream!(tmp_path, [], 2048) 
 			|> Upload.sha256()
 
+		uuid = Ecto.UUID.generate()
+
 		Repo.transaction fn ->
 			with {:ok, %File.Stat{size: size}} <- File.stat(tmp_path),
 				 {:ok, upload} <-
 				 	Upload.changeset(%Upload{},%{
-            uuid: Ecto.UUID.generate(),
+            uuid: uuid,
 				 		filename: filename,
 				 		content_type: content_type,
 				 		hash: hash, size: size
 				 	}) |> Repo.insert(),
 
-				 :ok <- File.cp(tmp_path, Upload.local_path(upload.id, filename)),
+				 :ok <- File.cp(tmp_path, Upload.path_from_uuid(uuid)),
 
 				 {:ok, upload} <- Upload.create_thumbnail(upload) |> Repo.update()
 			do 

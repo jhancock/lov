@@ -215,9 +215,13 @@ sudo apt-get install postgresql-11
 # sudo systemctl restart postgresql@11-main
 
 # ensure postgres doesn't auto-upgrade
-sudo apt-mark hold postgresql-11
+# sudo apt-mark hold postgresql-11
+# sudo apt-mark hold postgresql-client-11
+sudo apt-mark hold postgresql-11 postgresql-client-11
 # Remove the hold:
 # sudo apt-mark unhold postgresql-11
+# sudo apt-mark unhold postgresql-client-11
+# sudo apt-mark unhold postgresql-11 postgresql-client-11
 
 # connect to psql
 # sudo su - postgres

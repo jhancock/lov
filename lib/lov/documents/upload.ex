@@ -43,6 +43,11 @@ defmodule Lov.Documents.Upload do
     |> Path.join()
   end
 
+  def path_from_uuid(uuid) do
+    [@upload_directory, "#{uuid}.jpg"]
+    |> Path.join()
+  end
+
   def create_thumbnail(%__MODULE__{content_type: "image/" <> _img_type}=upload) do
     original_path = local_path(upload.id, upload.filename)
     thumb_path = thumbnail_path(upload.id)

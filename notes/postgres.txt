@@ -1,0 +1,10 @@
+# now try to connect with psql from user lov
+# lov> psql -d lov_dev -U postgres
+
+# psql auto format results https://stackoverflow.com/questions/9604723/alternate-output-format-for-psql
+\x auto
+
+# try to install this pager https://github.com/okbob/pspg
+# I'm having trouble with the ./configure on this.  somethine about missing readline/ncurses
+# http://merlinmoncure.blogspot.com/2007/10/better-psql-with-less.html
+

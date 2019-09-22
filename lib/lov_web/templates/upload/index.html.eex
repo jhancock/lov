@@ -14,8 +14,8 @@
 		<%= for upload <- @uploads do %>
 			<tr>
 				<td>
-					<%= if upload.thumbnail? do 
-						img_tag Routes.upload_thumbnail_path(@conn, :thumbnail, upload.id), 
+					<%= if upload.thumbnail_uuid do 
+						img_tag Routes.upload_thumbnail_path(@conn, :thumbnail, upload.thumbnail_uuid), 
 							class: "image"
 					else
 						img_tag "/images/generic_thumbnail.jpg", class: "image"

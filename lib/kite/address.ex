@@ -19,7 +19,7 @@ defmodule Kite.Address do
     country_code: String.t()
     }
 
-  def example() do
+  def example_jon() do
     %Address{
       recipient_name: "Jon Hancock",
       address_line_1: "157 Breaker Bay Rd",

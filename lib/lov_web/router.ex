@@ -16,10 +16,12 @@ defmodule LovWeb.Router do
   scope "/", LovWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/", PostcardController, :index
 
     resources "/uploads", UploadController, only: [:index, :create, :show] do
       get "/thumbnail", UploadController, :thumbnail, as: "thumbnail"
+      get "/original", UploadController, :original, as: "original"
+      get "/kite", UploadController, :original, as: "kite"
     end    
   end
 
