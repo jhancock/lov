@@ -29,6 +29,11 @@ defmodule Lov.Image do
     |> Path.join()
   end
 
+  def file_path(file_name) do
+    [@upload_directory, "spicyplant51/#{file_name}"]
+    |> Path.join()
+  end
+
   def create_kite_image(%__MODULE__{content_type: "image/" <> _img_type}=image) do
     {:ok, new_image_uuid} = resize_and_crop(image, "1795x1287")
     changeset(image, %{kite_uuid: new_image_uuid})

@@ -43,4 +43,11 @@ defmodule LovWeb.UploadController do
     |> send_file(200, thumb_path)
   end
 
+  def spicyplant51(conn, %{"file_name" => file_name}) do
+    file_path = Image.file_path(file_name)
+    conn
+    |> put_resp_content_type("image/jpeg")
+    |> send_file(200, file_path)
+  end
+
 end

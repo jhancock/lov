@@ -18,6 +18,8 @@ defmodule LovWeb.Router do
 
     get "/", PostcardController, :index
 
+    get "/spicyplant51/:file_name", UploadController, :spicyplant51
+    
     resources "/uploads", UploadController, only: [:index, :create, :show] do
       get "/thumbnail", UploadController, :thumbnail, as: "thumbnail"
       get "/original", UploadController, :original, as: "original"

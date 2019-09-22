@@ -48,8 +48,16 @@ defmodule Kite.Postcard do
     }
   end
 
-  def test_send() do
-    send(Address.example, "test message", "/Users/jhancock/Desktop/IMG_1888.jpg", :test)
+  def test_send_seagull() do
+    send_self_hosted(Address.example_jon, "test seagull", "seagull.jpg", :test)
+  end
+
+  def test_send_seagull_rotate() do
+    send_self_hosted(Address.example_jon, "test seagull_rotate", "seagull_rotate.jpg", :test)
+  end
+
+  def test_send_mom() do
+    send_self_hosted(Address.example_jon, "test mom", "mom.jpg", :test)
   end
 
   # def test_send(s3_asset_url, message) do
