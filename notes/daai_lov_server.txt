@@ -94,7 +94,7 @@ sudo apt-get install elixir
 # enable erlang vm to bind to ports below 1024 (e.g. 80 and 443)
 # this needs to be done everytime the erlang package upgrades.
 # install directory may change, e.g.: .../erts-10.4.2
-sudo setcap 'cap_net_bind_service=+ep' /usr/lib/erlang/erts-10.4.2/bin/beam.smp
+sudo setcap 'cap_net_bind_service=+ep' /usr/lib/erlang/erts-10.5.1/bin/beam.smp
 
 # install imagemagick
 sudo apt install imagemagick
@@ -216,7 +216,7 @@ sudo apt-get install postgresql-11
 
 # ensure postgres doesn't auto-upgrade
 # sudo apt-mark hold postgresql-11
-# sudo apt-mark hold postgresql-client-11
+# sudo apt-mark hold postgresql-11 postgresql-client-11
 sudo apt-mark hold postgresql-11 postgresql-client-11
 # Remove the hold:
 # sudo apt-mark unhold postgresql-11

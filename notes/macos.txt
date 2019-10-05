@@ -1,0 +1,53 @@
+macos install
+---------------
+brew update
+
+brew install elixir
+mix local.hex
+# see https://hexdocs.pm/phoenix/installation.html#content
+mix archive.install hex phx_new 1.4.10
+
+# install latest node from websit not from brew
+https://nodejs.org/en/download/current/
+
+brew install postgresql
+
+# To have launchd start postgresql now and restart at login:
+  brew services start postgresql
+# Or, if you don't want/need a background service you can just run:
+  pg_ctl -D /usr/local/var/postgres start
+
+# brew installs postgres with super user of jhancock, not postgres.  need to fix
+# login to postgres db as user jhancock
+psql -d postgres
+
+# note the role for jhancock exists with super powers
+postgres=# \du
+
+# create a role called postgres with LOGIN privs 
+postgres=# create role postgres LOGIN;
+
+# grant the privs of jhancock to postgres
+grant jhancock to postgres;
+
+# note that role postgres now inherits attributes of jhancock 
+postgres=# \du
+
+# exit psql
+postgres=# \q
+
+# login as postgres
+psql -U postgres
+
+# set the password to postgres so this has parity with whats on dev for linux
+postgres=# \password
+
+
+brew install imagemagick@6
+# If you need to have imagemagick@6 first in your PATH run:
+#  echo 'export PATH="/usr/local/opt/imagemagick@6/bin:$PATH"' >> ~/.bash_profile
+
+# For compilers to find imagemagick@6 you may need to set:
+#  export LDFLAGS="-L/usr/local/opt/imagemagick@6/lib"
+#  export CPPFLAGS="-I/usr/local/opt/imagemagick@6/include"
+
