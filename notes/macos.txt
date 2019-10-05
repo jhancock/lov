@@ -2,6 +2,8 @@ macos install
 ---------------
 brew update
 
+install elixir
+-----------------
 brew install elixir
 mix local.hex
 # see https://hexdocs.pm/phoenix/installation.html#content
@@ -10,6 +12,8 @@ mix archive.install hex phx_new 1.4.10
 # install latest node from websit not from brew
 https://nodejs.org/en/download/current/
 
+install postgres
+-----------------
 brew install postgresql
 
 # To have launchd start postgresql now and restart at login:
@@ -27,7 +31,7 @@ postgres=# \du
 # create a role called postgres with LOGIN privs 
 postgres=# create role postgres LOGIN;
 
-# grant the privs of jhancock to postgres
+# grant the privs of jhancock to postgres.  mayeb dont need this.  see below on ALTER ROLE for postgres role
 grant jhancock to postgres;
 
 # note that role postgres now inherits attributes of jhancock 
@@ -42,7 +46,30 @@ psql -U postgres
 # set the password to postgres so this has parity with whats on dev for linux
 postgres=# \password
 
+# login as jhancock
+psql -d postgres
 
+# set jhancock password to jhancock (keep it simple)
+postgres=# \password
+
+# edit /usr/local/var/postgres/pg_hba.conf
+change line
+# "local" is for Unix domain socket connections only
+local   all             all                                     trust
+# to
+local   all             all                                     md5
+
+pg_ctl -D /usr/local/var/postgres stop
+pg_ctl -D /usr/local/var/postgres start
+
+# login as jhancock
+psql -d postgres
+
+postgres=# ALTER ROLE postgres WITH CREATEDB;
+postgres=# ALTER ROLE postgres WITH SUPERUSER;
+
+imagemagick v6
+---------------
 brew install imagemagick@6
 # If you need to have imagemagick@6 first in your PATH run:
 #  echo 'export PATH="/usr/local/opt/imagemagick@6/bin:$PATH"' >> ~/.bash_profile
