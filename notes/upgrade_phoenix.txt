@@ -1,0 +1,14 @@
+notes on upgrdaing phoenix
+
+create a new phoenix project on mac and use Beyond Compare to work through mods
+add changes into a git branch
+
+after the manual compare/mods push the branch to daai server and test
+
+on daai server be sure to run:
+mix deps.get
+cd assets && npm install && node node_modules/webpack/bin/webpack.js --mode development
+cd assets
+npm update # this will modify assets/package.json 
+npm audit fix
+
