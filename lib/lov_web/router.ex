@@ -16,6 +16,7 @@ defmodule LovWeb.Router do
   scope "/", LovWeb do
     pipe_through :browser
 
+    # get "/", PageController, :index
     get "/", PostcardController, :index
 
     get "/spicyplant51/:file_name", UploadController, :spicyplant51

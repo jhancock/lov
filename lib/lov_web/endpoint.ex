@@ -39,7 +39,7 @@ defmodule LovWeb.Endpoint do
   end
 
   plug Plug.RequestId
-  plug Plug.Logger
+  plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
     parsers: [:urlencoded, {:multipart, length: 20_000_000}, :json],
@@ -55,7 +55,7 @@ defmodule LovWeb.Endpoint do
   plug Plug.Session,
     store: :cookie,
     key: "_lov_key",
-    signing_salt: "J1KDdzcz"
+    signing_salt: "T+s5x1jn"
 
   plug LovWeb.Router
 end

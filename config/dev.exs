@@ -93,6 +93,7 @@ config :lov, Lov.Repo,
   password: "postgres",
   database: "lov_dev",
   hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
 config :lov,
