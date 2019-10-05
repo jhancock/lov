@@ -45,7 +45,7 @@ defmodule Lov.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:mojito, "~> 0.5.0"},
       {:plug_canonical_host, "~> 1.0"},
-      {:mogrify, "~> 0.7.2"}
+      {:mogrify, "~> 0.7.3"}
     ]
   end
 
