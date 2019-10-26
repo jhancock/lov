@@ -1,25 +1,14 @@
 use Mix.Config
 
+# this is dev.exs without NGINX. erlang vm on port 443.  
+# see old code at top of endpoint.ex for using this plug
+# this canonical_host plug is not needed when using NGINX in front of erlang VM.
 # eventually need to seperate dev.lov.is from production
 # https://github.com/remiprev/plug_canonical_host
 # https://sublimecoding.com/how-to-canonicalize-a-domain-in-elixir-phoenix-framework/
 # https://sublimecoding.com/301-redirects-in-phoenix/
-# config :lov,
-#   canonical_host: "lov.is"
-
-# Configure your database
-config :lov, Lov.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "lov_dev",
-  hostname: "localhost",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
-
 config :lov,
-  upload_directory: "/home/lov/upload"
-
-import_config "dev.secret.exs"
+  canonical_host: "lov.is"
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -28,7 +17,18 @@ import_config "dev.secret.exs"
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :lov, LovWeb.Endpoint,
-  http: [port: 4000],
+  http: [:inet6, port: 80],
+  url: [host: "lov.is", port: 443],
+  https: [
+        :inet6,
+        port: 443,
+        cipher_suite: :strong,
+        keyfile: "/home/lov/certs/lov_is_20190609.key",
+        certfile: "/home/lov/certs/lov_is_20190609.crt",
+        cacertfile: "/home/lov/certs/lov_is_20190609.ca-bundle",
+        dhfile: "/home/lov/certs/dhparams.pem"
+      ],
+  force_ssl: [hsts: true],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -89,3 +89,17 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Configure your database
+config :lov, Lov.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "lov_dev",
+  hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+
+config :lov,
+  upload_directory: "/home/lov/upload"
+
+import_config "dev.secret.exs"
