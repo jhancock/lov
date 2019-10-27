@@ -4,4 +4,4 @@ https://github.com/tus/tusd/blob/master/docs/usage-binary.md
 
 # install uppy
 cd assets
-npm install @uppy/core @uppy/dashboard @uppy/tus
+npm install @uppy/core @uppy/dashboard @uppy/tus @uppy/thumbnail-generator
