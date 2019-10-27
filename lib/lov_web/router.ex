@@ -19,6 +19,11 @@ defmodule LovWeb.Router do
     # get "/", PageController, :index
     get "/", PostcardController, :index
 
+    get "/test", PostcardController, :test
+
+    get "/uppy-test/dashboard-tus-io", UppyTestController, :dashboard_tus_io
+    get "/uppy-test/simple-tus-io", UppyTestController, :simple_tus_io
+
     get "/spicyplant51/:file_name", UploadController, :spicyplant51
     
     resources "/uploads", UploadController, only: [:index, :create, :show] do

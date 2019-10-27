@@ -1,15 +1,12 @@
 /* This file is for your main application css. */
 
 @import "./phoenix.css";
+/* @import "./uppy.css"; */
+/* @import "./upload.css" */
 
-@import "./upload.css"
-
-@tailwind base;
-
-@tailwind components;
-
+/* @tailwind base;
+@tailwind components; */
 /* Put your custom components here */
-
-@tailwind utilities;
+/* @tailwind utilities; */
 
 /* Put your custom utilities here */

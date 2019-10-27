@@ -1,0 +1,6 @@
+// import "es6-promise/auto"
+// import "whatwg-fetch"
+// import "@uppy/core"
+// import "@uppy/file-input"
+// import "@uppy/status-bar"
+// import "@uppy/tus"

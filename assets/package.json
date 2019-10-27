@@ -6,9 +6,12 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
+    "@uppy/core": "^1.5.1",
+    "@uppy/dashboard": "^1.4.1",
+    "@uppy/tus": "^1.4.2",
+    "jquery": "^3.4.1",
     "phoenix": "file:../deps/phoenix",
-    "phoenix_html": "file:../deps/phoenix_html",
-    "jquery": "^3.4.1"
+    "phoenix_html": "file:../deps/phoenix_html"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

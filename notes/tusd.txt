@@ -1,0 +1,7 @@
+https://github.com/tus/tusd/blob/master/docs/usage-binary.md
+
+./tusd -base-path=/upload/ -upload-dir=/home/lov/files/upload -behind-proxy -host=127.0.0.1 -port=1080
+
+# install uppy
+cd assets
+npm install @uppy/core @uppy/dashboard @uppy/tus
