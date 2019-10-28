@@ -4,4 +4,5 @@ https://github.com/tus/tusd/blob/master/docs/usage-binary.md
 
 # install uppy
 cd assets
-npm install @uppy/core @uppy/dashboard @uppy/tus @uppy/thumbnail-generator
+npm install es6-promise whatwg-fetch
+npm install @uppy/core @uppy/dashboard @uppy/tus @uppy/thumbnail-generator @uppy/status-bar @uppy/file-input

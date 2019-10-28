@@ -24,6 +24,7 @@ defmodule LovWeb.Router do
     get "/uppy-test/dashboard-tus-io", UppyTestController, :dashboard_tus_io
     get "/uppy-test/simple-tus-io", UppyTestController, :simple_tus_io
     get "/uppy-test/simple-lov-is", UppyTestController, :simple_lov_is
+    get "/uppy-test/simple-stimulus", UppyTestController, :simple_stimulus
 
     get "/spicyplant51/:file_name", UploadController, :spicyplant51
     

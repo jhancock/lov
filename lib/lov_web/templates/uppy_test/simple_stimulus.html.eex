@@ -1,9 +1,10 @@
 <div class="rounded overflow-hidden shadow-lg">
-  <%#= img_tag Routes.upload_original_path(@conn, :original, @image_id) %>
-  <div class="px-6 py-4">
+  <div class="px-6 py-4" data-controller="upload">
     <div class="font-bold text-xl mb-2">Early morning fish</div>
+      <div class="UppyInput"></div>
+      <div class="UppyInput-Progress"></div>
     <p class="text-gray-700 text-base">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
     </p>
   </div>
   <div class="px-6 py-4">

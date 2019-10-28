@@ -12,4 +12,8 @@ defmodule LovWeb.UppyTestController do
   def simple_lov_is(conn, _params) do
     render(conn, "simple_lov_is.html", layout: false)
   end
+
+  def simple_stimulus(conn, _params) do
+    render(conn, "simple_stimulus.html")
+  end
 end
