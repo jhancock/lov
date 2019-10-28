@@ -47,10 +47,11 @@ export default class extends Controller {
       waitForThumbnailsBeforeUpload: false
     })
     .on('thumbnail:generated', (file, preview) => {
+      const uploadDiv = document.getElementById("progress-div")
       const img = document.createElement('img')
       img.src = preview
       img.width = 400
-      document.body.appendChild(img)
+      uploadDiv.appendChild(img)
     })
   }
 
