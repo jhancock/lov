@@ -1,0 +1,342 @@
+# linode ai.lov.is  45.79.113.8
+
+# create new ssh keys for this server
+ssh-keygen -o -a 100 -t ed25519 -f ~/.ssh/jhancock_lov_20191109 -C "jhancock@shellshadow.com"
+# new keys for gitlab
+ssh-keygen -o -a 100 -t ed25519 -f ~/.ssh/jhancock_gitlab_20191109 -C "jhancock@shellshadow.com"
+# copy public key to MacOS clpboard
+pbcopy < ~/.ssh/jhancock_gitlab_20191109.pub
+
+# as root
+# set timezone to 'Etc/UTC'
+# dpkg-reconfigure tzdata
+# should have tried to newer method and checked first
+# https://help.ubuntu.com/lts/serverguide/NTP.html.en
+timedatectl status
+
+# check hostname
+hostname
+# set hostname, if needed - already set
+# sudo vim /etc/hostname
+# hostname -F /etc/hostname
+
+# update system
+sudo apt update
+sudo apt upgrade
+sudo apt autoremove
+
+# install editor.   already installed
+# sudo apt install vim-tiny
+
+# add users
+sudo adduser jhancock
+sudo adduser jhancock sudo
+sudo adduser dev
+sudo adduser dev sudo
+sudo adduser prod
+sudo adduser prod sudo
+
+# byobu - already installed
+byobu-config  # choose to enable byobu at login
+# F-9 -> Change Escape Sequence, set to Ctr-S so Ctr-A works for beginning of line
+# type something at command line.  then press ctl-a
+
+# setup ssh keys for users jhancock, dev and prod
+[server] mkdir ~/.ssh && chmod 700 ~/.ssh
+[client] scp ~/.ssh/jhancock_lov_20191109.pub jhancock@ai:~/.ssh
+[server] cat ~/.ssh/jhancock_lov_20191109.pub > ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+
+# config sshd
+sudo vim /etc/ssh/sshd_config
+# edit:
+Port 22 -> Port 2666
+PermitRootLogin yes -> PermitRootLogin no
+PasswordAuthentication yes -> PasswordAuthentication no
+
+# change client ~/.ssh/config to ref hostname, port and keys.
+# restart sshd
+sudo service ssh restart
+
+# enable access to gitlab from user dev
+vim ~/.ssh/config
+# add:
+Host gitlab.com
+  Compression yes
+  HostName gitlab.com
+  IdentityFile ~/.ssh/jhancock_2016_12_1
+
+# copy gitlab keys to server
+[client] scp ~/.ssh/jhancock_gitlab_20191109* dev@ai:~/.ssh
+
+# copy mac's .gitconfig and .gitignore_global to dev@ai
+[client] scp ~/.gitconfig dev@ai:~/.
+# edit line: excludesfile = /Users/jhancock/.gitignore_global
+[client] scp ~/.gitignore_global dev@ai:~/.
+
+#######################################
+##  Install erlang, elixir and node  ##
+#######################################
+
+# https://elixir-lang.org/install.html#unix-and-unix-like
+wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb
+sudo apt-get update
+sudo apt install -y build-essential
+sudo apt-get install esl-erlang
+# sudo apt-mark hold esl-erlang
+# Remove the hold to upgrade:
+# sudo apt-mark unhold esl-erlang
+sudo apt-get install elixir
+
+# if not using nginx as reverse proxy
+# enable erlang vm to bind to ports below 1024 (e.g. 80 and 443)
+# this needs to be done everytime the erlang package upgrades.
+# install directory may change, e.g.: .../erts-10.4.2
+sudo setcap 'cap_net_bind_service=+ep' /usr/lib/erlang/erts-10.5.1/bin/beam.smp
+
+# install imagemagick
+sudo apt install imagemagick
+
+# install node.js
+# https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions-enterprise-linux-fedora-and-snap-packages
+$ the above link tells us to install for ubuntu from https://github.com/nodesource/distributions/blob/master/README.md#debinstall
+
+curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# install inotify for live reload of file changes for phoenix dev mode 
+# https://github.com/rvoicilas/inotify-tools/wiki
+sudo apt-get install inotify-tools
+
+# webpack or whatever hits default inotify limit of 8192
+# https://github.com/guard/listen/wiki/Increasing-the-amount-of-inotify-watchers
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+# https://hexdocs.pm/phoenix/installation.html
+mix local.hex
+mix archive.install hex phx_new 1.4.11
+
+# clone lov repo
+git clone git@gitlab.com:jonhancock/lov.git
+
+# copy dev.secret.exs prod.secret.exs and shared.secret.exs
+# scp ~/lov/config/*.secret.exs lov@daai:~/lov/config/.
+scp lov@daai:~/lov/config/*.secret.exs ~/lov/config/.s
+
+# HERE
+# setup postgres first ;)
+cd ~/lov
+mix deps.get
+mix ecto.setup
+cd assets && npm install
+# npm install shows some vulnerability warnings.
+# run `npm audit fix` to fix them, or `npm audit` for details
+# skipping `npm audit fix` for now. will look into the implications on phoenix and webpack later
+
+# setup app and erlang for hhtps (without nginx)
+# https://github.com/elixir-plug/plug/blob/master/guides/https.md
+# https://hexdocs.pm/plug/Plug.SSL.html#configure/1
+
+# stop and disable nginx if its installed
+# sudo service nginx stop
+# sudo systemctl disable nginx
+
+# create custom set of Diffie-Hellman parameters
+openssl dhparam -out dhparams.pem 4096
+
+# uncomment ssl options from phoenix config files: dev.exs and prod.exs
+
+# https://elixirforum.com/t/proper-way-to-enforce-https-only/2117/5
+# https://spin.atomicobject.com/2018/03/07/force-ssl-phoenix-framework/
+
+# SSL test  
+https://www.ssllabs.com/ssltest/analyze.html?d=lov.is
+
+# remote iex.  attach to another erlang node
+# https://broot.ca/erlang-remsh-is-dangerous
+# https://stackoverflow.com/questions/38491614/attach-an-iex-session-to-running-elixir-otp-process
+# http://joeellis.la/iex-remsh-shells/
+
+###################################
+##  add tailwind css to phoenix  ##
+###################################
+
+# add tailwind css
+# https://www.derrickreimer.com/tech/2019/06/12/tailwind-phoenix.html
+cd assets
+npm install tailwindcss --save-dev
+npm install postcss-loader --save-dev
+
+# create file assets/postcss.config.js:
+module.exports = {
+   plugins: [
+    require('tailwindcss'),
+    require('autoprefixer')
+  ]
+}
+
+# edit assets/webpack.config.js:
+     use: [MiniCssExtractPlugin.loader, 
+          { loader: 'css-loader', options: { importLoaders: 1 } },
+          'postcss-loader']
+
+# edit assets/css/app.css
+add:
+     @tailwind base;
+     @tailwind components;
+     /* Put your custom components here */
+     @tailwind utilities;
+     /* Put your custom utilities here */
+
+# add customize file https://tailwindcss.com/docs/configuration
+cd assets
+npx tailwind init
+
+# TODO: ensure tailwind files are stripped down for production.
+
+##########################
+##  Install postgresql  ##
+##########################
+
+# https://wiki.postgresql.org/wiki/Apt
+sudo apt-get install curl ca-certificates gnupg
+curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+sudo apt-get update
+sudo apt-get install postgresql-12
+
+# install auto runs:
+# pg_ctlcluster 12 main start
+# Ver Cluster Port Status Owner    Data directory              Log file
+12  main    5432 down   postgres /var/lib/postgresql/12/main /var/log/postgresql/postgresql-12-main.log
+
+# sudo systemctl stop postgresql@12-main
+# sudo systemctl restart postgresql@12-main
+
+# ensure postgres doesn't auto-upgrade
+sudo apt-mark hold postgresql-12 postgresql-client-12
+# Remove the hold:
+# sudo apt-mark unhold postgresql-12 postgresql-client-12
+
+# connect to psql
+# sudo su - postgres
+# psql
+# set password to postgres
+# \password 
+
+# enable connecting to psql from other user accounts
+# https://gist.github.com/AtulKsol/4470d377b448e56468baef85af7fd614
+# edit /etc/postgresql/12/main/pg_hba.conf
+# change first line:
+# Database administrative login by Unix domain socket
+# local   	all             postgres     peer
+# to:
+# local  	all      		postgres     md5
+
+sudo su - postgres
+psql
+> SELECT pg_reload_conf();
+
+# now try to connect with psql from user lov
+# dev@ai> psql -U postgres
+
+##############################
+##  SSL generate csr notes  ##
+##############################
+
+namecheap csr and ssl tools
+https://decoder.link/csr_generator
+
+openssl req -new -newkey rsa:2048 -nodes -keyout lov_is.key -out lov_is.csr
+>>>>>>
+jhancock@bigmac:~$ openssl req -new -newkey rsa:2048 -nodes -keyout lov_is.key -out lov_is.csr
+Generating a 2048 bit RSA private key
+.+++
+............................+++
+writing new private key to 'lov_is.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) []:US
+State or Province Name (full name) []:
+Locality Name (eg, city) []:
+Organization Name (eg, company) []:Lov LLC
+Organizational Unit Name (eg, section) []:
+Common Name (eg, fully qualified host name) []:lov.is
+Email Address []:jhancock@shellshadow.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+
+<<<<<<<<
+
+##########################
+##  VS Code remote dev  ##
+##########################
+
+# set terminal font
+# https://code.visualstudio.com/docs/editor/integrated-terminal
+# https://code.visualstudio.com/docs/getstarted/settings
+# in VS Code, Preferences -> Setting, search for terminal.integrated.fontSize
+
+# https://code.visualstudio.com/docs/remote/ssh#_getting-started
+
+##########################
+##  Install nginx       ##
+##########################
+
+sudo apt update
+sudo apt install nginx
+
+# TODO - Configuring Ubuntu and Nginx for Phoenix performance
+# https://www.youtube.com/watch?v=Vrzug5IcuKg
+
+# copy ssl cert and key from ~/Documents/lov_docs/ssl_20190609
+# put together bundle
+# https://helpdesk.ssls.com/hc/en-us/articles/203427642-How-to-install-an-SSL-certificate-on-a-NGINX-server
+# see readme.txt in ~/Documents/lov_docs/ssl_20190609/lov_is
+# from ~/Documents/lov_docs/ssl_20190609
+scp lov_is_20190609.key lov@daai:~/certs/.
+# from ~/Documents/lov_docs/ssl_20190609/lov_is
+scp lov_is_20190609_full_bundle.crt lov@daai:~/certs/.
+
+# https://www.linode.com/docs/web-servers/nginx/tls-deployment-best-practices-for-nginx/
+# cp original nginc.conf
+cd /etc/nginx
+sudo cp nginx.conf nginx.conf.original
+cd sites-available
+sudo cp default default.original
+# we will use the newer method of including from directory conf.d instead of sites-available and sites-enabled
+
+# remove symlink in sites-enabled
+sudo rm /etc/nginx/sites-enabled/default
+
+sudo cp /home/lov/lov/notes/nginx/nginx.conf /etc/nginx/.
+sudo cp /home/lov/lov/notes/nginx/lov_is.conf /etc/nginx/conf.d/.
+
+# test nginx config
+sudo /usr/sbin/nginx -t
+
+# reload configs
+# sudo nginx -s reload
+sudo service nginx restart
+# sudo service nginx stop
+# systemctl list-units --all --type=service --no-pager
+# sudo systemctl disable nginx
+
+sudo systemctl status nginx
+sudo systemctl start nginx
+sudo systemctl stop nginx
+sudo systemctl enable nginx
+sudo systemctl disable nginx
+
+# run test  
+https://www.ssllabs.com/ssltest/analyze.html?d=lov.is
