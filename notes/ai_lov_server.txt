@@ -133,6 +133,7 @@ cd assets && npm install
 # run `npm audit fix` to fix them, or `npm audit` for details
 # skipping `npm audit fix` for now. will look into the implications on phoenix and webpack later
 
+# BEGIN SKIP
 # setup app and erlang for hhtps (without nginx)
 # https://github.com/elixir-plug/plug/blob/master/guides/https.md
 # https://hexdocs.pm/plug/Plug.SSL.html#configure/1
@@ -156,6 +157,8 @@ https://www.ssllabs.com/ssltest/analyze.html?d=lov.is
 # https://broot.ca/erlang-remsh-is-dangerous
 # https://stackoverflow.com/questions/38491614/attach-an-iex-session-to-running-elixir-otp-process
 # http://joeellis.la/iex-remsh-shells/
+
+# END SKIP
 
 ###################################
 ##  add tailwind css to phoenix  ##
@@ -296,9 +299,26 @@ A challenge password []:
 sudo apt update
 sudo apt install nginx
 
+# BEGIN SKIP
+# https://www.linode.com/docs/web-servers/nginx/tls-deployment-best-practices-for-nginx/
+# cp original nginx.conf
+cd /etc/nginx
+sudo cp nginx.conf nginx.conf.original
+cd sites-available
+sudo cp default default.original
+# we will use the newer method of including from directory conf.d instead of sites-available and sites-enabled
+# END SKIP
+
+sudo /home/dev/lov/notes/nginx/copy_nginx.sh
+# sudo cp /home/dev/lov/notes/nginx/nginx.conf /etc/nginx/.
+# sudo cp /home/dev/lov/notes/nginx/lov_is.conf /etc/nginx/conf.d/.
+# sudo /usr/sbin/nginx -t
+# sudo service nginx restart
+
 # TODO - Configuring Ubuntu and Nginx for Phoenix performance
 # https://www.youtube.com/watch?v=Vrzug5IcuKg
 
+# OLD NOTES
 # copy ssl cert and key from ~/Documents/lov_docs/ssl_20190609
 # put together bundle
 # https://helpdesk.ssls.com/hc/en-us/articles/203427642-How-to-install-an-SSL-certificate-on-a-NGINX-server
@@ -308,19 +328,11 @@ scp lov_is_20190609.key lov@daai:~/certs/.
 # from ~/Documents/lov_docs/ssl_20190609/lov_is
 scp lov_is_20190609_full_bundle.crt lov@daai:~/certs/.
 
-# https://www.linode.com/docs/web-servers/nginx/tls-deployment-best-practices-for-nginx/
-# cp original nginc.conf
-cd /etc/nginx
-sudo cp nginx.conf nginx.conf.original
-cd sites-available
-sudo cp default default.original
-# we will use the newer method of including from directory conf.d instead of sites-available and sites-enabled
-
 # remove symlink in sites-enabled
 sudo rm /etc/nginx/sites-enabled/default
 
-sudo cp /home/lov/lov/notes/nginx/nginx.conf /etc/nginx/.
-sudo cp /home/lov/lov/notes/nginx/lov_is.conf /etc/nginx/conf.d/.
+sudo cp /home/dev/lov/notes/nginx/nginx.conf /etc/nginx/.
+sudo cp /home/dev/lov/notes/nginx/lov_is.conf /etc/nginx/conf.d/.
 
 # test nginx config
 sudo /usr/sbin/nginx -t
