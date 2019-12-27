@@ -1,0 +1,164 @@
+# linode crm.redstarling.com  50.116.1.145
+
+# create new ssh keys for this server
+ssh-keygen -o -a 100 -t ed25519 -f ~/.ssh/jhancock_crm_20191125 -C "jhancock@shellshadow.com"
+# copy public key to MacOS clpboard
+pbcopy < ~/.ssh/jhancock_gitlab_20191109.pub
+
+# as root
+# set timezone to 'Etc/UTC'
+# dpkg-reconfigure tzdata
+# should have tried to newer method and checked first
+# https://help.ubuntu.com/lts/serverguide/NTP.html.en
+timedatectl status
+
+# check hostname
+hostname
+# set hostname, if needed - already set
+# sudo vim /etc/hostname
+# hostname -F /etc/hostname
+
+# update system
+sudo apt update
+sudo apt upgrade
+sudo apt autoremove
+
+# install editor.   already installed
+# sudo apt install vim-tiny
+
+# add users
+sudo adduser jhancock
+sudo adduser jhancock sudo
+
+# byobu - already installed
+byobu-config  # choose to enable byobu at login
+# F-9 -> Change Escape Sequence, set to Ctr-S so Ctr-A works for beginning of line
+# or type something at command line.  then press ctl-a
+
+# setup ssh keys for users jhancock, dev and prod
+[server] mkdir ~/.ssh && chmod 700 ~/.ssh
+[client] scp ~/.ssh/jhancock_crm_20191125.pub jhancock@crm:~/.ssh
+[server] cat ~/.ssh/jhancock_crm_20191125.pub > ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+
+# config sshd
+sudo vim /etc/ssh/sshd_config
+# edit:
+Port 22 -> Port 2666
+PermitRootLogin yes -> PermitRootLogin no
+PasswordAuthentication yes -> PasswordAuthentication no
+
+# change client ~/.ssh/config to ref hostname, port and keys.
+# restart sshd
+sudo service ssh restart
+
+#######################################
+##  Install SuiteCRM                 ##
+#######################################
+
+https://websiteforstudents.com/setup-suitecrm-platform-on-ubuntu-16-04-18-04-with-nginx-mariadb-and-php-7-2-fpm/
+
+sudo apt update
+sudo apt install nginx
+
+sudo systemctl enable nginx.service
+sudo systemctl status nginx
+#sudo systemctl stop nginx.service
+#sudo systemctl start nginx.service
+
+sudo apt-get install mariadb-server mariadb-client
+
+sudo systemctl enable mariadb.service
+sudo systemctl status mariadb
+#sudo systemctl stop mariadb.service
+#sudo systemctl start mariadb.service
+
+# test login
+sudo mysql -u root -p
+
+# install PHP 7.2
+sudo apt install php7.2-fpm php7.2-common php7.2-mysql php7.2-gmp php7.2-curl php7.2-intl php7.2-mbstring php7.2-xmlrpc php7.2-gd php7.2-bcmath php7.2-imap php7.2-xml php7.2-cli php7.2-zip
+
+sudo cp /etc/php/7.2/fpm/php.ini /etc/php/7.2/fpm/php.ini.original
+sudo vim /etc/php/7.2/fpm/php.ini
+
+# edit php.ini add or change these settings:
+max_execution_time = 60  # changed to
+max_execution_time = 360
+
+memory_limit = 128M  # changed to
+memory_limit = 256M
+
+file_uploads = On  # not changed
+
+upload_max_filesize = 2M  # changed to
+upload_max_filesize = 100M
+
+allow_url_fopen = On  # not changed
+
+short_open_tag = Off  # changed to
+short_open_tag = On
+
+;cgi.fix_pathinfo=1 # uncommented and changed to 0
+cgi.fix_pathinfo = 0
+
+# did not set.  Would like to understand is SuiteCRM will work well using system and MariaDB UTC settings
+# date.timezone = America/Chicago  
+
+sudo systemctl restart nginx.service
+
+sudo mysql -u root -p
+CREATE DATABASE suitecrm;
+CREATE USER 'suitecrmuser'@'localhost' IDENTIFIED BY 'new_password_here';
+GRANT ALL ON suitecrm.* TO 'suitecrmuser'@'localhost' IDENTIFIED BY 'user_password_here' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+EXIT;
+
+curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+
+cd /var/www/html
+sudo git clone https://github.com/salesagility/SuiteCRM.git suitecrm
+cd /var/www/html/suitecrm
+sudo composer install --no-dev
+
+sudo chown -R www-data:www-data /var/www/html/suitecrm/
+sudo chmod -R 755 /var/www/html/suitecrm/
+
+sudo vim /etc/nginx/sites-available/suitecrm
+
+contents:
+
+server {
+    listen 80;
+    listen [::]:80;
+    root /var/www/html/suitecrm;
+    index  index.php index.html index.htm;
+    server_name  crm.redstarling.com;
+
+    client_max_body_size 100M;
+
+    location / {
+         try_files $uri $uri/ /index.html;
+     }
+
+    location ~ \.php$ {
+         include snippets/fastcgi-php.conf;
+         fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+         include fastcgi_params;
+    }
+}
+
+sudo ln -s /etc/nginx/sites-available/suitecrm /etc/nginx/sites-enabled/
+sudo systemctl restart nginx.service
+
+from browser:
+http://crm.redstaring.com/install.php
+
+
+To Setup Crontab
+In order to run SuiteCRM Schedulers, edit your web server user's crontab file with this command:
+sudo crontab -e -u www-data
+... and add the following line to the crontab file:
+*    *    *    *    *     cd /var/www/html/suitecrm; php -f cron.php > /dev/null 2>&1
+You should do this only after the installation is concluded. 
+

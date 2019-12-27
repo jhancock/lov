@@ -31,10 +31,15 @@ sudo apt autoremove
 # add users
 sudo adduser jhancock
 sudo adduser jhancock sudo
+sudo adduser mhd
+sudo adduser mhd sudo
 sudo adduser dev
 sudo adduser dev sudo
 sudo adduser prod
 sudo adduser prod sudo
+
+# copy /home/mhd from old server
+rsync -a 
 
 # byobu - already installed
 byobu-config  # choose to enable byobu at login
