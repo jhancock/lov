@@ -19,8 +19,9 @@ config :lov, Lov.Repo,
 config :lov,
   home_directory: "/home/dev",
   tusd_upload_directory: "/home/dev/tusd_upload",
-  images_directory: "/home/dev/pics",
-  images_test_directory: "/home/dev/pics_test"
+  image_directory: "/home/dev/pics",
+  image_test_directory: "/home/dev/pics_test",
+  image_base_url: "https://lov.is/pics"
 
 import_config "dev.secret.exs"
 

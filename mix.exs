@@ -43,8 +43,7 @@ defmodule Lov.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:mojito, "~> 0.5.0"},
-      {:plug_canonical_host, "~> 1.0"},
+      {:mojito, "~> 0.6.1"},
       {:mogrify, "~> 0.7.3"}
     ]
   end
