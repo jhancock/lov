@@ -14,6 +14,11 @@ defmodule LovWeb.Router do
   end
 
   scope "/", LovWeb do
+    pipe_through :api
+    post "/tusd", TusdController, :hook
+  end
+
+  scope "/", LovWeb do
     pipe_through :browser
 
     # get "/", PageController, :index

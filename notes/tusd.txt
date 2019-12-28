@@ -1,8 +1,9 @@
 https://github.com/tus/tusd/blob/master/docs/usage-binary.md
 
-./tusd -base-path=/upload/ -upload-dir=/home/dev/files/upload -behind-proxy -host=127.0.0.1 -port=1080 -max-size=10000000
-
+./tusd -base-path=/upload/ -upload-dir=/home/dev/tusd_upload -behind-proxy -host=127.0.0.1 -port=1080 -max-size=10000000 -hooks-http http://localhost:8081/tusd -hooks-enabled-events post-finish
+ 
 # install uppy
 cd assets
 npm install es6-promise whatwg-fetch
 npm install @uppy/core @uppy/dashboard @uppy/tus @uppy/thumbnail-generator @uppy/status-bar @uppy/file-input
+

@@ -17,7 +17,10 @@ config :lov, Lov.Repo,
   pool_size: 10
 
 config :lov,
-  upload_directory: "/home/lov/upload"
+  home_directory: "/home/dev",
+  tusd_upload_directory: "/home/dev/tusd_upload",
+  images_directory: "/home/dev/pics",
+  images_test_directory: "/home/dev/pics_test"
 
 import_config "dev.secret.exs"
 
