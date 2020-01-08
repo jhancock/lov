@@ -1,24 +1,24 @@
 defmodule Kite.Postcard do
   # alias __MODULE__
-  alias Kite.Asset
+  # alias Kite.Asset
   alias Kite.ApiKeys
   alias Kite.Address
 
   @image_base_url Application.get_env(:lov, :image_base_url)
   @print_api_url "https://api.kite.ly/v4.0/print/"
 
-  def send(file_name, address, message, api_mode) do
+  def send(filename, address, message, api_mode) do
     %ApiKeys{public: public_key, secret: secret_key} = ApiKeys.get(api_mode)
     headers = [
       {"authorization", "ApiKey #{public_key}:#{secret_key}"}, 
       {"content-type", "application/json"}
     ]
-    image_url = "#{@image_base_url}/#{file_name}"
-    payload = create_payload(address, message, image_url) |> Jason.encode!
+    image_url = "#{@image_base_url}/#{filename}"
+    payload = create_payload(image_url, address, message) |> Jason.encode!
     Mojito.post(@print_api_url, headers, payload)
   end
 
-  def create_payload(address, message, image_url) do
+  def create_payload(image_url, address, message) do
     %{
       "shipping_address" => address,
       "customer_email" => "jhancock@shellshadow.com",
@@ -32,15 +32,11 @@ defmodule Kite.Postcard do
     }
   end
 
-  # def test_send(file_name, address, message) do
-  #   send(address, message, file_name, :test)
-  # end
-
-  def test_send(file_name, options \\ %{}) do
+  def test_send(filename, options \\ %{}) do
     api_mode = Map.get(options, :api_mode, :test)
     address = Map.get(options, :address, Address.example_jon)
-    message = Map.get(options, :address, "test #{file_name}")
-    send(file_name, address, message, api_mode)
+    message = Map.get(options, :address, "test #{filename}")
+    send(filename, address, message, api_mode)
   end
 
   def test_send_seagull() do

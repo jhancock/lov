@@ -4,7 +4,11 @@ defmodule Lov.ImageManager do
 	alias Lov.Repo
   alias Lov.Image
   
-  @user_uuid "7f47d085-ea97-4daf-9edb-f9e46b7b304f"
+  @user_uuid Application.fetch_env!(:lov, :test_user_id) 
+
+  def create_image(user_id, name, type, size) do
+
+  end
 
 	def get_image!(id) do
 		Image

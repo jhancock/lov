@@ -14,7 +14,7 @@ export default class extends Controller {
   initialize() {
     this.createUppy()
   }
-
+  
   createUppy() {
     this.uppy = new Uppy({
       debug: true,
@@ -53,6 +53,7 @@ export default class extends Controller {
       img.width = 400
       uploadDiv.appendChild(img)
     })
+    .setMeta({ upload_token: document.getElementById('main').getAttribute('data-value') })
   }
 
 }

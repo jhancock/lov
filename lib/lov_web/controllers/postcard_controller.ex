@@ -1,8 +1,8 @@
 defmodule LovWeb.PostcardController do
   use LovWeb, :controller
 
-  alias Lov.Documents
-  alias Lov.Documents.Upload
+  # alias Lov.Documents
+  # alias Lov.Documents.Upload
 
   def index(conn, _params) do
     # uploads = Documents.list_uploads()

@@ -1,19 +1,19 @@
 defmodule Lov.Image do
-  use Ecto.Schema
+  use Lov.Schema
   import Ecto.Changeset
 
   @upload_directory Application.get_env(:lov, :upload_directory)
 
   schema "images" do
-    field :user_uuid, :string
-    field :filename, :string
+    field :type, :string
     field :size, :integer
-    field :content_type, :string
-    field :original_uuid, :string
-    field :kite_uuid, :string
-    field :web_uuid, :string
-    field :thumbnail_uuid, :string
-
+    # name is the original name as seen by the file uploader.  it is not used.
+    # the files on the server are named by UUIDs
+    field :name, :string
+    field :kite_id, Ecto.UUID
+    field :web_id, Ecto.UUID
+    field :thumbnail_id, Ecto.UUID
+    belongs_to :user, Lov.User
     timestamps()
   end
 
@@ -34,12 +34,12 @@ defmodule Lov.Image do
     |> Path.join()
   end
 
-  def create_kite_image(%__MODULE__{content_type: "image/" <> _img_type}=image) do
+  def create_kite_image(%__MODULE__{type: "image/" <> _img_type}=image) do
     {:ok, new_image_uuid} = resize_and_crop(image, "1795x1287")
     changeset(image, %{kite_uuid: new_image_uuid})
   end  
 
-  def create_thumbnail_image(%__MODULE__{content_type: "image/" <> _img_type}=image) do
+  def create_thumbnail_image(%__MODULE__{type: "image/" <> _img_type}=image) do
     {:ok, new_image_uuid} = resize_and_crop(image, "416x300")
     changeset(image, %{thumbnail_uuid: new_image_uuid})
   end  

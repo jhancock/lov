@@ -13,6 +13,7 @@ config :lov, Lov.Repo,
   password: "postgres",
   database: "lov_dev",
   hostname: "localhost",
+  migration_primary_key: [name: :id, type: :binary_id],
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -20,8 +21,8 @@ config :lov,
   home_directory: "/home/dev",
   tusd_upload_directory: "/home/dev/tusd_upload",
   image_directory: "/home/dev/pics",
-  image_test_directory: "/home/dev/pics_test",
-  image_base_url: "https://lov.is/pics"
+  image_base_url: "https://lov.is/pics",
+  test_user_id: "7f47d085-ea97-4daf-9edb-f9e46b7b304f"
 
 import_config "dev.secret.exs"
 
