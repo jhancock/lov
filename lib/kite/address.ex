@@ -31,6 +31,17 @@ defmodule Kite.Address do
     }
   end
 
+  def example_josh() do
+    %Address{
+      recipient_name: "Josh Hancock 1547019",
+      address_line_1: "P.O. Box 1109",
+      city: "Clinton",
+      county_state: "North Carolina",
+      postcode: "28329",
+      country_code: "USA"
+    }
+  end
+
   def example_mom() do
     %Address{
       recipient_name: "Kathleen Kaye",
