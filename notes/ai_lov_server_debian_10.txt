@@ -149,6 +149,55 @@ Host gitlab.com
 # edit line: excludesfile = /Users/jhancock/.gitignore_global
 [client] scp ~/.gitignore_global dev@ai:~/.
 
+##########################
+##  Install postgresql  ##
+##########################
+
+# https://wiki.postgresql.org/wiki/Apt
+sudo apt-get install curl ca-certificates gnupg
+curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+sudo apt-get update
+sudo apt-get install postgresql-12
+
+# install auto runs:
+# pg_ctlcluster 12 main start
+Ver Cluster Port Status Owner    Data directory              Log file          
+12  main    5432 down   postgres /var/lib/postgresql/12/main /var/log/postgresql/postgresql-12-main.log
+
+# sudo systemctl status postgresql@12-main
+# sudo systemctl stop postgresql@12-main
+# sudo systemctl restart postgresql@12-main
+
+# ensure postgres doesn't auto-upgrade
+sudo apt-mark hold postgresql-12 postgresql-client-12
+# Remove the hold:
+# sudo apt-mark unhold postgresql-12 postgresql-client-12
+
+# connect to psql
+# sudo su - postgres
+# psql
+# set password to postgres
+# \password 
+
+# enable connecting to psql from other user accounts
+# https://gist.github.com/AtulKsol/4470d377b448e56468baef85af7fd614
+# edit /etc/postgresql/12/main/pg_hba.conf
+# change first line:
+# Database administrative login by Unix domain socket
+# local   	all             postgres     peer
+# to:
+# local  	all      		postgres     md5
+
+sudo su - postgres
+psql
+> SELECT pg_reload_conf();
+
+# now try to connect with psql from user lov
+# dev@ai> psql -U postgres
+
 #######################################
 ##  Install erlang, elixir and node  ##
 #######################################
@@ -159,9 +208,10 @@ sudo apt-get update
 sudo apt install -y build-essential
 sudo apt-get install esl-erlang
 # sudo apt-mark hold esl-erlang
-# Remove the hold to upgrade:
 # sudo apt-mark unhold esl-erlang
 sudo apt-get install elixir
+# sudo apt-mark hold elixir
+# sudo apt-mark unhold elixir
 
 # if not using nginx as reverse proxy
 # enable erlang vm to bind to ports below 1024 (e.g. 80 and 443)
@@ -190,14 +240,13 @@ sudo sysctl -p
 
 # https://hexdocs.pm/phoenix/installation.html
 mix local.hex
-mix archive.install hex phx_new 1.4.11
+mix archive.install hex phx_new 1.4.16
 
 # clone lov repo
 git clone git@gitlab.com:jonhancock/lov.git
 
 # copy dev.secret.exs prod.secret.exs and shared.secret.exs
-# scp ~/lov/config/*.secret.exs lov@daai:~/lov/config/.
-scp lov@daai:~/lov/config/*.secret.exs ~/lov/config/.s
+scp dev@ai:~/lov/config/*.secret.exs /home/dev/lov/config/.
 
 # HERE
 # setup postgres first ;)
@@ -209,13 +258,16 @@ cd assets && npm install
 # run `npm audit fix` to fix them, or `npm audit` for details
 # skipping `npm audit fix` for now. will look into the implications on phoenix and webpack later
 
+# see what breaks ;)
+iex -S mix phx.server
+
 # BEGIN SKIP
 # setup app and erlang for hhtps (without nginx)
 # https://github.com/elixir-plug/plug/blob/master/guides/https.md
 # https://hexdocs.pm/plug/Plug.SSL.html#configure/1
 
 # stop and disable nginx if its installed
-# sudo service nginx stop
+# sudo systemctl stop nginx
 # sudo systemctl disable nginx
 
 # create custom set of Diffie-Hellman parameters
@@ -273,54 +325,6 @@ npx tailwind init
 
 # TODO: ensure tailwind files are stripped down for production.
 
-##########################
-##  Install postgresql  ##
-##########################
-
-# https://wiki.postgresql.org/wiki/Apt
-sudo apt-get install curl ca-certificates gnupg
-curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-
-sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-
-sudo apt-get update
-sudo apt-get install postgresql-12
-
-# install auto runs:
-# pg_ctlcluster 12 main start
-# Ver Cluster Port Status Owner    Data directory              Log file
-12  main    5432 down   postgres /var/lib/postgresql/12/main /var/log/postgresql/postgresql-12-main.log
-
-# sudo systemctl stop postgresql@12-main
-# sudo systemctl restart postgresql@12-main
-
-# ensure postgres doesn't auto-upgrade
-sudo apt-mark hold postgresql-12 postgresql-client-12
-# Remove the hold:
-# sudo apt-mark unhold postgresql-12 postgresql-client-12
-
-# connect to psql
-# sudo su - postgres
-# psql
-# set password to postgres
-# \password 
-
-# enable connecting to psql from other user accounts
-# https://gist.github.com/AtulKsol/4470d377b448e56468baef85af7fd614
-# edit /etc/postgresql/12/main/pg_hba.conf
-# change first line:
-# Database administrative login by Unix domain socket
-# local   	all             postgres     peer
-# to:
-# local  	all      		postgres     md5
-
-sudo su - postgres
-psql
-> SELECT pg_reload_conf();
-
-# now try to connect with psql from user lov
-# dev@ai> psql -U postgres
-
 ##############################
 ##  SSL generate csr notes  ##
 ##############################
@@ -375,21 +379,27 @@ A challenge password []:
 sudo apt update
 sudo apt install nginx
 
-# BEGIN SKIP
-# https://www.linode.com/docs/web-servers/nginx/tls-deployment-best-practices-for-nginx/
-# cp original nginx.conf
-cd /etc/nginx
-sudo cp nginx.conf nginx.conf.original
-cd sites-available
-sudo cp default default.original
-# we will use the newer method of including from directory conf.d instead of sites-available and sites-enabled
-# END SKIP
-
 sudo /home/dev/lov/notes/nginx/copy_nginx.sh
 # sudo cp /home/dev/lov/notes/nginx/nginx.conf /etc/nginx/.
 # sudo cp /home/dev/lov/notes/nginx/lov_is.conf /etc/nginx/conf.d/.
 # sudo /usr/sbin/nginx -t
-# sudo service nginx restart
+# sudo systemctl restart nginx
+
+# sudo systemctl status nginx
+# sudo systemctl start nginx
+# sudo systemctl stop nginx
+# sudo systemctl restart nginx
+# sudo systemctl reload nginx
+# sudo systemctl enable nginx
+# sudo systemctl disable nginx
+# systemctl list-units --all --type=service --no-pager
+
+# run test  
+https://www.ssllabs.com/ssltest/analyze.html?d=lov.is
+
+#######################
+### nginx old notes ###
+#######################
 
 # TODO - Configuring Ubuntu and Nginx for Phoenix performance
 # https://www.youtube.com/watch?v=Vrzug5IcuKg
@@ -420,11 +430,4 @@ sudo service nginx restart
 # systemctl list-units --all --type=service --no-pager
 # sudo systemctl disable nginx
 
-sudo systemctl status nginx
-sudo systemctl start nginx
-sudo systemctl stop nginx
-sudo systemctl enable nginx
-sudo systemctl disable nginx
 
-# run test  
-https://www.ssllabs.com/ssltest/analyze.html?d=lov.is
