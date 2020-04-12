@@ -15,7 +15,7 @@ config :lov, LovWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "PrDtXiz379f5DX2KmadzVKfOHQj2/ypP/Y2mnjEZOBbWd79YCw82x6mbZ0619Q41",
   render_errors: [view: LovWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Lov.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Lov.PubSub, adapter: Phoenix.PubSub.PG2],
   live_view: [signing_salt: "FWjq0Sj6"]
 
 # Configures Elixir's Logger

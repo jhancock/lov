@@ -11,3 +11,6 @@ cd assets && npm install && node node_modules/webpack/bin/webpack.js --mode deve
 cd assets
 npm update # this will modify assets/package.json 
 npm audit fix
+
+# https://www.bobek.cz/blog/2019/tailwindcss-phoenix/
+

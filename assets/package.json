@@ -6,6 +6,8 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
+    "autoprefixer": "^9.7.6",
+    "postcss-cli": "^7.1.0",
     "@uppy/core": "^1.10.0",
     "@uppy/file-input": "^1.4.7",
     "@uppy/status-bar": "^1.6.1",
