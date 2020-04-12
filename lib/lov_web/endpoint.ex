@@ -1,6 +1,16 @@
 defmodule LovWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :lov
 
+  # The session will be stored in the cookie and signed,
+  # this means its contents can be read but not tampered with.
+  # Set :encryption_salt if you would also like to encrypt it.
+  @session_options [
+    store: :cookie,
+    key: "_lov_key",
+    signing_salt: "xlrfgNfx"
+  ]
+
+
   # not needed if nginx is in front of erlang vm
   # :plug_canonical_host needs to be in mix.exs
   # plug(:canonical_host)
@@ -51,13 +61,8 @@ defmodule LovWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
 
-  # The session will be stored in the cookie and signed,
-  # this means its contents can be read but not tampered with.
-  # Set :encryption_salt if you would also like to encrypt it.
-  plug Plug.Session,
-    store: :cookie,
-    key: "_lov_key",
-    signing_salt: "T+s5x1jn"
+  plug Plug.Session, @session_options
+
 
   plug LovWeb.Router
 end
