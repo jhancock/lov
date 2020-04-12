@@ -10,6 +10,25 @@ To start your Phoenix server:
   * You can also run your app inside IEx (Interactive Elixir) as:
     $ iex -S mix phx.server
 
+  * for prod https://hexdocs.pm/phoenix/deployment.html
+    # Initial setup
+      $ mix deps.get --only prod
+      $ MIX_ENV=prod mix compile
+
+      # Compile assets
+      $ npm run deploy --prefix ./assets
+      $ mix phx.digest
+
+      # Custom tasks (like DB migrations)
+      $ MIX_ENV=prod mix ecto.migrate
+
+      # Finally run the server
+      $ PORT=4001 MIX_ENV=prod mix phx.server
+
+      # need to learn to run in prod with detached interactive shell
+
+      # optimize asset deploy, study https://webpack.js.org/guides/code-splitting/
+
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).

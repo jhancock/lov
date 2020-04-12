@@ -10,8 +10,15 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :lov, LovWeb.Endpoint,
-  url: [host: "example.com", port: 80],
+  http: [port: 4000],
   cache_static_manifest: "priv/static/cache_manifest.json"
+
+config :lov,
+  home_directory: "/home/dev",
+  tusd_upload_directory: "/home/dev/tusd_upload",
+  image_directory: "/home/dev/pics",
+  image_base_url: "https://lov.is/pics",
+  test_user_id: "27d6582f-ea39-4b16-b7d5-76aa90fe7e8b"
 
 # Do not print debug messages in production
 config :logger, level: :info
