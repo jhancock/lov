@@ -1,0 +1,48 @@
+# https://www.bobek.cz/blog/2019/tailwindcss-phoenix/
+# https://fullstackphoenix.com/posts/use-tailwind-css-with-phoenix-framework
+
+
+######################
+### setup PurgeCSS ###
+######################
+
+# somethings not right.  I can do a build but purge doesn't seem to get called.  same outpuit as without it
+
+# https://tailwindcss.com/docs/controlling-file-size
+npm install @fullhuman/postcss-purgecss --save-dev
+
+# edit postcss.config.js
+
+// postcss.config.js
+const purgecss = require('@fullhuman/postcss-purgecss')({
+
+  // Specify the paths to all of the template files in your project 
+  content: [
+    '../lib/**/*.eex',
+    '../lib/**/*.leex',
+  ],
+
+
+  // Include any special characters you're using in this regular expression
+  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
+})
+
+module.exports = {
+  plugins: [
+    require('tailwindcss'),
+    require('autoprefixer'),
+    ...process.env.NODE_ENV === 'production'
+      ? [purgecss]
+      : []
+  ]
+}
+
+# edit app.css
+# added comments to begin/end 
+
+/* purgecss start ignore */
+@tailwind  base;
+@tailwind  components;
+/* purgecss end ignore */
+
+@tailwind  utilities;
