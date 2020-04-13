@@ -46,3 +46,4 @@ module.exports = {
 /* purgecss end ignore */
 
 @tailwind  utilities;
+
