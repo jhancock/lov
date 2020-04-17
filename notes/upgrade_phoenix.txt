@@ -1,5 +1,12 @@
 notes on upgrdaing phoenix
 
+# upgrade from 1.4.x to 1.5
+https://gist.github.com/chrismccord/e53e79ef8b34adf5d8122a47db44d22f
+
+$ mix archive.uninstall phx_new
+$ mix archive.install hex phx_new 1.5.0-rc.0
+
+
 create a new phoenix project on mac and use Beyond Compare to work through mods
 add changes into a git branch
 
@@ -7,9 +14,11 @@ after the manual compare/mods push the branch to daai server and test
 
 on daai server be sure to run:
 mix deps.get
-cd assets && npm install && node node_modules/webpack/bin/webpack.js --mode development
+# cd assets && npm install && node node_modules/webpack/bin/webpack.js --mode development
+cd assets && npm install 
 cd assets
-npm update # this will modify assets/package.json 
+npm install # install whats in packages.json
+# npm update # this will try to install/update to latest version; modify assets/package.json 
 npm audit fix
 
 # https://www.bobek.cz/blog/2019/tailwindcss-phoenix/

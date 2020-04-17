@@ -20,6 +20,13 @@ brew install postgresql
   brew services start postgresql
 # Or, if you don't want/need a background service you can just run:
   pg_ctl -D /usr/local/var/postgres start
+  # pg_ctl -D /usr/local/var/postgres -l logfile start
+
+# to delete the db cluster and recreate
+
+pg_ctl -D /usr/local/var/postgres stop
+rm -rf /usr/local/var/postgres
+initdb -D /usr/local/var/postgres
 
 # brew installs postgres with super user of jhancock, not postgres.  need to fix
 # login to postgres db as user jhancock

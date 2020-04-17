@@ -1,5 +1,22 @@
+https://stackoverflow.com/questions/46677752/the-difference-between-requirex-and-import-x
+https://insights.untapt.com/webpack-import-require-and-you-3fd7f5ea93c0
+
+https://elixirforum.com/t/github-alert-one-of-your-dependencies-has-a-security-vulnerability/22974/2
+https://elixirforum.com/t/how-webpack-4-works-with-phoenix-1-4/18021
+
+https://webpack.js.org/concepts/
+
+https://tailwindcss.com/docs/installation
+https://tailwindui.com/
 # https://www.bobek.cz/blog/2019/tailwindcss-phoenix/
 # https://fullstackphoenix.com/posts/use-tailwind-css-with-phoenix-framework
+https://phxroad.com/frontend/add-tailwind-css-to-elixir-phoenix-1-4
+https://github.com/ukchukx/phoenix-tailwind
+
+
+tailwindui
+
+npm install @tailwindcss/ui  --save
 
 
 ######################

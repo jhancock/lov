@@ -5,7 +5,8 @@ To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `cd assets && npm install`
+  * Install Node.js dependencies with `cd assets && npm install`  ||
+ cd assets && npm install && node node_modules/webpack/bin/webpack.js --mode development
   * Start Phoenix endpoint with `mix phx.server`
   * You can also run your app inside IEx (Interactive Elixir) as:
     $ iex -S mix phx.server
