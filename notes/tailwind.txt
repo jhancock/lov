@@ -8,6 +8,11 @@ https://webpack.js.org/concepts/
 
 https://tailwindcss.com/docs/installation
 https://tailwindui.com/
+
+# useful. however, in postcss.config.js there is a line "...process.env.NODE_ENV=== 'production'"
+# this test does not work.  for prod, we have to bypass the test to get purgecss to run
+https://pragmaticstudio.com/tutorials/adding-tailwind-css-to-phoenix
+
 # https://www.bobek.cz/blog/2019/tailwindcss-phoenix/
 # https://fullstackphoenix.com/posts/use-tailwind-css-with-phoenix-framework
 https://phxroad.com/frontend/add-tailwind-css-to-elixir-phoenix-1-4
