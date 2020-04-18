@@ -6,14 +6,17 @@ defmodule Lov.Application do
   use Application
 
   def start(_type, _args) do
-    # List all child processes to be supervised
     children = [
       # Start the Ecto repository
       Lov.Repo,
-      # Start the endpoint when the application starts
+      # Start the Telemetry supervisor
+      LovWeb.Telemetry,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: Lov.PubSub},
+      # Start the Endpoint (http/https)
       LovWeb.Endpoint
-      # Starts a worker by calling: Lov.Worker.start_link(arg)
-      # {Lov.Worker, arg},
+      # Start a worker by calling: Lov.Worker.start_link(arg)
+      # {Lov.Worker, arg}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

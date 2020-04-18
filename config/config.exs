@@ -13,10 +13,10 @@ config :lov,
 # Configures the endpoint
 config :lov, LovWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "PrDtXiz379f5DX2KmadzVKfOHQj2/ypP/Y2mnjEZOBbWd79YCw82x6mbZ0619Q41",
-  render_errors: [view: LovWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Lov.PubSub, adapter: Phoenix.PubSub.PG2],
-  live_view: [signing_salt: "FWjq0Sj6"]
+  secret_key_base: "7gYIDhzT/IrdD8WduhbioVvmq57tro2xUn9dyCh9eUS8YajpEdVfG6uXn/dZrqOJ",
+  render_errors: [view: LovWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: Lov.PubSub,
+  live_view: [signing_salt: "70JpZQWw"]
 
 # Configures Elixir's Logger
 config :logger, :console,
