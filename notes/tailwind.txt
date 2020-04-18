@@ -1,3 +1,23 @@
+##################################
+### working insturctions BEGIN ###
+##################################
+
+https://tailwindcss.com/docs/installation
+https://tailwindui.com/
+
+# useful. however, in postcss.config.js there is a line "...process.env.NODE_ENV=== 'production'"
+# this test does not work unless we set the NODE_ENV variable
+https://pragmaticstudio.com/tutorials/adding-tailwind-css-to-phoenix
+
+# Compile assets - MUST set NODE_ENV=production
+$ NODE_ENV=production npm run deploy --prefix ./assets
+$ mix phx.digest
+
+################################
+### working insturctions END ###
+################################
+
+
 https://stackoverflow.com/questions/46677752/the-difference-between-requirex-and-import-x
 https://insights.untapt.com/webpack-import-require-and-you-3fd7f5ea93c0
 
@@ -5,13 +25,6 @@ https://elixirforum.com/t/github-alert-one-of-your-dependencies-has-a-security-v
 https://elixirforum.com/t/how-webpack-4-works-with-phoenix-1-4/18021
 
 https://webpack.js.org/concepts/
-
-https://tailwindcss.com/docs/installation
-https://tailwindui.com/
-
-# useful. however, in postcss.config.js there is a line "...process.env.NODE_ENV=== 'production'"
-# this test does not work.  for prod, we have to bypass the test to get purgecss to run
-https://pragmaticstudio.com/tutorials/adding-tailwind-css-to-phoenix
 
 # https://www.bobek.cz/blog/2019/tailwindcss-phoenix/
 # https://fullstackphoenix.com/posts/use-tailwind-css-with-phoenix-framework

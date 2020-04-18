@@ -16,8 +16,8 @@ To start your Phoenix server:
       $ mix deps.get --only prod
       $ MIX_ENV=prod mix compile
 
-      # Compile assets
-      $ npm run deploy --prefix ./assets
+      # Compile assets - MUST set NODE_ENV=production
+      $ NODE_ENV=production npm run deploy --prefix ./assets
       $ mix phx.digest
 
       # Custom tasks (like DB migrations)
