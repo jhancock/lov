@@ -23,8 +23,8 @@ defmodule LovWeb.Router do
     pipe_through :browser
 
     # get "/", PageController, :index
-    # get "/", PostcardController, :index
-    get "/", UppyTestController, :simple_stimulus
+    get "/", PostcardController, :index
+    # get "/", UppyTestController, :simple_stimulus
 
     # get "/uppy-test/dashboard-tus-io", UppyTestController, :dashboard_tus_io
     # get "/uppy-test/simple-tus-io", UppyTestController, :simple_tus_io

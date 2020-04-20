@@ -2,7 +2,8 @@
 import { Controller } from "stimulus"
 const Uppy = require('@uppy/core')
 const FileInput = require('@uppy/file-input')
-const StatusBar = require('@uppy/status-bar')
+// const StatusBar = require('@uppy/status-bar')
+const ProgressBar = require('@uppy/progress-bar')
 const ThumbnailGenerator = require('@uppy/thumbnail-generator')
 const Tus = require('@uppy/tus')
 
@@ -27,7 +28,11 @@ export default class extends Controller {
       }
     })
     .use(FileInput, {
-      target: '.UppyInput', pretty: false 
+      target: document.getElementById("upload-div"),
+      pretty: true,
+      locale: {
+       strings: {chooseFiles: 'add Photo'}
+      } 
     })
     .use(Tus, { 
       endpoint: 'https://lov.is/upload/', 
@@ -36,10 +41,9 @@ export default class extends Controller {
       autoRetry: true, 
       retryDelays: [0, 1000, 3000, 5000] 
     })
-    .use(StatusBar, {
-      target: '.UppyInput-Progress',
-      hideUploadButton: true,
-      hideAfterFinish: false
+    .use(ProgressBar, {
+      target: document.getElementById("progress-div"),
+      hideAfterFinish: true
     })
     .use(ThumbnailGenerator, {
       thumbnailWidth: 400,

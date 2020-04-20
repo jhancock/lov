@@ -1,16 +1,13 @@
-<h1 class="text-orange-500 text-5xl font-bold text-center">Tailwind CSS</h1>
-<div class="rounded overflow-hidden shadow-lg">
-  <div class="px-6 py-4" data-controller="upload">
-    <div class="font-bold text-xl mb-2">Early morning fish</div>
-      <div id="upload-div" class="UppyInput"></div>
-      <div id="progress-div" class="UppyInput-Progress"></div>
-    <p class="text-gray-700 text-base">
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.
-    </p>
+<!-- Be sure to use this with a layout container that is full-width on mobile -->
+<div class="bg-white overflow-hidden shadow sm:rounded-lg">
+  <div class="border-b border-gray-200 px-4 py-5 sm:px-6">
+    <!-- Content goes here -->
+    <!-- We use less vertical padding on card headers on desktop than on body sections -->
+    early morning fish
   </div>
-  <div class="px-6 py-4">
-    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">#photography</span>
-    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">#travel</span>
-    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">#winter</span>
+  <div class="px-4 py-5 sm:p-6" data-controller="upload">
+    <!-- Content goes here -->
+    <div id="upload-div" class="UppyInput"></div>
   </div>
+  <div id="progress-div" class="UppyInput-Progress"></div>
 </div>
