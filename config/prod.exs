@@ -11,6 +11,7 @@ use Mix.Config
 # before starting your production server.
 config :lov, LovWeb.Endpoint,
   http: [port: 4000],
+  debug_errors: true,
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 config :lov,
@@ -21,7 +22,11 @@ config :lov,
   test_user_id: "27d6582f-ea39-4b16-b7d5-76aa90fe7e8b"
 
 # Do not print debug messages in production
-config :logger, level: :info
+# config :logger, level: :info
+
+# For debugging in prod setup
+# Do not include metadata nor timestamps in development logs
+config :logger, :console, format: "[$level] $message\n"
 
 # ## SSL Support
 #
