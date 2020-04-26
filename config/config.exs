@@ -8,7 +8,8 @@
 use Mix.Config
 
 config :lov,
-  ecto_repos: [Lov.Repo]
+  ecto_repos: [Lov.Repo],
+  generators: [binary_id: true]
 
 # Configures the endpoint
 config :lov, LovWeb.Endpoint,

@@ -1,16 +1,18 @@
 defmodule Lov.User do
-  use Lov.Schema
+  use Ecto.Schema
   import Ecto.Changeset
-
   alias Lov.Image
 
-  @type t :: %__MODULE__{
-    id: binary,
-    email: String.t(),
-    images: [Image.t()],
-    inserted_at: NaiveDateTime.t(),
-    updated_at: NaiveDateTime.t()
-  }
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
+
+  # @type t :: %__MODULE__{
+  #   id: binary,
+  #   email: String.t(),
+  #   images: [Image.t()],
+  #   inserted_at: NaiveDateTime.t(),
+  #   updated_at: NaiveDateTime.t()
+  # }
 
   @required_fields []
 

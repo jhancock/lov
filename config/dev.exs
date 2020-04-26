@@ -13,9 +13,11 @@ config :lov, Lov.Repo,
   password: "postgres",
   database: "lov_dev",
   hostname: "localhost",
-  migration_primary_key: [name: :id, type: :binary_id],
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
+
+  # this config option used to be part of the above.  removed when upgraded to phx 1.5.1
+  # migration_primary_key: [name: :id, type: :binary_id],
 
 config :lov,
   home_directory: "/home/dev",

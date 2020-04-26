@@ -1,6 +1,7 @@
 defmodule Lov.Image do
-  use Lov.Schema
+  use Ecto.Schema
   import Ecto.Changeset
+  alias Lov.User
 
   @upload_directory Application.get_env(:lov, :upload_directory)
 
@@ -13,7 +14,7 @@ defmodule Lov.Image do
     field :kite_id, Ecto.UUID
     field :web_id, Ecto.UUID
     field :thumbnail_id, Ecto.UUID
-    belongs_to :user, Lov.User
+    belongs_to :user, User
     timestamps()
   end
 
