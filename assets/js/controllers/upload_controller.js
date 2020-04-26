@@ -1,11 +1,22 @@
 // src/controllers/upload_controller.js
 import { Controller } from "stimulus"
+// import { Uppy, FileInput, ProgressBar, ThumbnailGenerator, Tus  } from 'uppy' 
+// import Uppy, { FileInput, ProgressBar, ThumbnailGenerator, Tus  } from 'uppy' 
+// import { Uppy } from "@uppy/core"
 const Uppy = require('@uppy/core')
+// import { FileInput } from "@uppy/file-input"
 const FileInput = require('@uppy/file-input')
-// const StatusBar = require('@uppy/status-bar')
+// import { ProgressBar } from "@uppy/progress-bar"
+// // const StatusBar = require('@uppy/status-bar')
 const ProgressBar = require('@uppy/progress-bar')
+// import { ThumbnailGenerator } from "@uppy/thumbnail-generator"
 const ThumbnailGenerator = require('@uppy/thumbnail-generator')
+// import { Tus } from "@uppy/tus"
 const Tus = require('@uppy/tus')
+
+require('@uppy/core/dist/style.css')
+require('@uppy/file-input/dist/style.css')
+require('@uppy/progress-bar/dist/style.css')
 
 export default class extends Controller {
   connect() {

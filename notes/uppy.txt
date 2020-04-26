@@ -1,2 +1,4 @@
 
+npm install uppy --save
+
 npm install @uppy/progress-bar --save
