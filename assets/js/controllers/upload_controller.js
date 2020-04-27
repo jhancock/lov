@@ -19,32 +19,32 @@ require('@uppy/file-input/dist/style.css')
 require('@uppy/progress-bar/dist/style.css')
 
 export default class extends Controller {
+
   connect() {
-    console.log("Hello, Stimulus!", this.element)
+    console.log("Upploadd!", this.element)
+    this.uppy = this.createUppy()
+    this.configureUppy(this.uppy)
   }
 
   initialize() {
-    this.createUppy()
+    // console.log("uppy initialized...", this.createUppy())
   }
   
   createUppy() {
-    this.uppy = new Uppy({
+    return new Uppy({
       debug: true,
       autoProceed: true,
       restrictions: {
         maxFileSize: 10000000,
         maxNumberOfFiles: 1,
         minNumberOfFiles: 1,
-        allowedFileTypes: ['image/jpeg', 'image/png']
+        allowedFileTypes: ['image/jpeg']
       }
     })
-    .use(FileInput, {
-      target: document.getElementById("upload-div"),
-      pretty: true,
-      locale: {
-       strings: {chooseFiles: 'add Photo'}
-      } 
-    })
+  }
+
+  configureUppy(uppy) {
+    uppy
     .use(Tus, { 
       endpoint: 'https://lov.is/upload/', 
       limit: 5, 
@@ -53,7 +53,7 @@ export default class extends Controller {
       retryDelays: [0, 1000, 3000, 5000] 
     })
     .use(ProgressBar, {
-      target: document.getElementById("progress-div"),
+      target: document.querySelector("#progress-div"),
       hideAfterFinish: true
     })
     .use(ThumbnailGenerator, {
@@ -62,13 +62,46 @@ export default class extends Controller {
       waitForThumbnailsBeforeUpload: false
     })
     .on('thumbnail:generated', (file, preview) => {
-      const uploadDiv = document.getElementById("progress-div")
+      // const uploadDiv = this.element
+      const uploadDiv = document.querySelector("#progress-div")
+      // const uploadDiv = document.getElementById("progress-div")
       const img = document.createElement('img')
       img.src = preview
       img.width = 400
       uploadDiv.appendChild(img)
     })
-    .setMeta({ upload_token: document.getElementById('main').getAttribute('data-value') })
+    .setMeta({ upload_token: this.getUploadToken() })
+  }
+
+  getUploadToken() {
+    const element = document.head.querySelector(`meta[name="id"]`)
+    return element.getAttribute("content")
+  }
+
+  fileSelected(event) {
+    console.log("uppy be...", this.uppy)
+
+    const files = Array.from(event.target.files)
+    console.log("file selected", files)
+
+    files.forEach((file) => {
+      try {
+        this.uppy.addFile({
+          source: 'file input',
+          name: file.name,
+          type: file.type,
+          data: file
+        })
+      } catch (err) {
+        if (err.isRestriction) {
+          // handle restrictions
+          console.log('Restriction error:', err)
+        } else {
+          // handle other errors
+          console.error(err)
+        }
+      }
+    })
   }
 
 }
