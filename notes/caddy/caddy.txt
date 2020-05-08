@@ -1,0 +1,14 @@
+https://caddyserver.com/docs/download
+
+# stop and disable nginx
+sudo systemctl stop nginx
+sudo systemctl disable nginx
+
+# install caddy
+echo "deb [trusted=yes] https://apt.fury.io/caddy/ /" \
+    | sudo tee -a /etc/apt/sources.list.d/caddy-fury.list
+sudo apt update
+sudo apt install caddy
+
+# install created symlink /etc/systemd/system/multi-user.target.wants/caddy.service → /lib/systemd/system/caddy.service.
+
