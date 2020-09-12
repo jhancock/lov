@@ -1,0 +1,30 @@
+[user]
+	name = Jon Hancock
+	email = jhancock@shellshadow.com
+[core]
+	excludesfile = /home/dev/.gitignore_global
+[color]
+	status = auto
+	diff = auto
+	branch = auto
+	ui = true
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+[alias]
+	st = status
+	ci = commit
+	br = branch
+	co = checkout
+	df = diff
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
