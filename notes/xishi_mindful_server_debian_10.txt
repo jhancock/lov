@@ -1,0 +1,284 @@
+# linode xishi.mindfulbeauty.nz  74.207.240.126
+# debian 10.4
+
+# create new ssh keys for this server
+ssh-keygen -o -a 100 -t ed25519 -f ~/.ssh/jhancock_mindful_20200522 -C "jhancock@shellshadow.com"
+# copy public key to MacOS clpboard
+pbcopy < ~/.ssh/jhancock_mindful_20200522.pub
+
+# check timezone is 'Etc/UTC'
+timedatectl status
+
+# check hostname
+hostnamectl
+# set hostname, if needed 
+hostnamectl set-hostname xishi.mindfulbeauty.nz
+# this should have changed /etc/hostname
+# cat /etc/hostname
+
+# check debain version
+# uname -mrs
+# lsb_release -a
+# cat /etc/debian_version
+
+# update system
+apt-get update
+apt-get dist-upgrade
+# most of the time don't do dist-upgrade
+apt-get upgrade
+apt autoremove
+#TODO verify security updates are installed automatically
+
+# vim already installed
+
+# add users
+sudo adduser jhancock
+sudo adduser jhancock sudo
+
+###################
+### config sshd ###
+###################
+
+sudo vim /etc/ssh/sshd_config
+# edit:
+Port 22 -> Port 2666
+PermitRootLogin yes -> PermitRootLogin no
+# change this to no after setting up the other user accounts.
+# PasswordAuthentication yes -> PasswordAuthentication no
+
+# change client ~/.ssh/config to ref hostname, port and keys.
+# restart sshd
+sudo systemctl restart ssh
+
+# setup ssh keys for user jhancock
+[server] mkdir ~/.ssh && chmod 700 ~/.ssh
+[client] scp ~/.ssh/jhancock_mindful_20200522.pub jhancock@chun:~/.ssh
+[server] cat ~/.ssh/jhancock_mindful_20200522.pub > ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+
+
+###################
+### setup users ###
+###################
+
+sudo apt-get install build-essential git rsync
+
+# edit ~/.bashrc
+
+# uncomment
+# force_color_prompt=yes
+
+# set $PS1
+  PS1='${debian_chroot:+($debian_chroot)}\[\e[38;5;202m\]\[\e[38;5;245m\]\u\[\e[00m\]@\[\e[38;5;172m\]\h\[\e[00m\]:\[\e[38;5;5m\]\w\[\e[00m\]$ ' 
+
+# uncomment alias ll
+alias ll='ls -alF'
+
+# show terminal colour names.
+# https://superuser.com/questions/285381/how-does-the-tmux-color-palette-work
+for i in {0..255}; do printf "\x1b[38;5;${i}mcolor%-5i\x1b[0m" $i ; if ! (( ($i + 1 ) % 8 )); then echo ; fi ; done
+
+# show colors with backgrounds
+https://gist.github.com/ivanbrennan/8ce10a851851e5f04728d8da900ef1c5
+
+# tmux
+sudo apt-get install tmux
+
+# add to end of ~/.bashrc
+if [[ -n "$PS1" ]] && [[ -z "$TMUX" ]] && [[ -n "$SSH_CONNECTION" ]]; then     
+  tmux attach-session -t $USER || tmux new -s $USER                            
+fi
+
+
+# install and config tpm - tmux plugin manager
+# https://github.com/tmux-plugins/tpm
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+# use tmux-sensible plugin
+# copy .tmux.conf from other user (copy from ai1.lov.is initially)
+# cp /home/jhancock/.tmux.conf .
+
+# to reload tmux conf and install plugins, prefix + I (control-b + I)
+
+# to copy to MacOS clipboard, hold fn key to use mouse to select, then use command-c
+
+# https://danielmiessler.com/study/tmux/
+# https://www.hostinger.com/tutorials/tmux-beginners-guide-and-cheat-sheet/
+# https://danielmiessler.com/study/tmux/
+# https://www.hostinger.com/tutorials/tmux-beginners-guide-and-cheat-sheet/
+# https://www.hamvocke.com/blog/a-guide-to-customizing-your-tmux-conf/
+
+# after setting up users, edit /etc/ssh/sshd_config
+PasswordAuthentication yes -> PasswordAuthentication no
+
+sudo systemctl restart ssh
+
+***************************************************
+***  Install nginx, php, mariadb and wordpress  ***
+***************************************************
+
+https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-lemp-nginx-mariadb-and-php-on-debian-10
+
+https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mariadb-php-lemp-stack-on-debian-10
+
+https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-debian-10
+
+
+sudo apt update
+sudo apt install nginx
+
+sudo apt install mariadb-server
+sudo mysql_secure_installation
+# don't set mariadb root password as described in the instructions above
+# https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mariadb-php-lemp-stack-on-debian-10
+
+sudo apt install php-fpm php-mysql
+
+sudo mkdir /var/www/mindfulbeauty
+sudo chown -R $USER:$USER /var/www/mindfulbeauty
+
+sudo vim /etc/nginx/sites-available/mindfulbeauty
+# BEGIN /etc/nginx/sites-available/mindfulbeauty
+server {
+  listen 80;
+  listen [::]:80;
+
+  root /var/www/mindfulbeauty;
+  index index.php index.html index.htm;
+
+  server_name mindfulbeauty.nz www.mindfulbeauty.nz;
+
+  location / {
+      try_files $uri $uri/ =404;
+  }
+
+  location ~ \.php$ {
+      include snippets/fastcgi-php.conf;
+      fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+  }
+}
+# END /etc/nginx/sites-available/mindfulbeauty
+
+sudo ln -s /etc/nginx/sites-available/mindfulbeauty /etc/nginx/sites-enabled/
+
+sudo nginx -t
+sudo systemctl reload nginx
+
+vim /var/www/mindfulbeauty/info.php
+# BEGIN /var/www/mindfulbeauty/info.php
+<?php
+phpinfo();
+?>
+# END /var/www/mindfulbeauty/info.php
+
+# test
+http://mindfulbeauty.nz/info.php
+
+# move the test file out of the public directory after testing
+mkdir ~/php_test
+mv /var/www/mindfulbeauty/info.php ~/php_test
+
+# install certbot and configure nginx
+# https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-debian-10
+
+sudo apt update
+sudo apt install python3-acme python3-certbot python3-mock python3-openssl python3-pkg-resources python3-pyparsing python3-zope.interface
+
+sudo apt install python3-certbot-nginx
+
+sudo certbot --nginx -d mindfulbeauty.nz -d www.mindfulbeauty.nz
+
+# output
+ - Congratulations! Your certificate and chain have been saved at:             
+   /etc/letsencrypt/live/mindfulbeauty.nz/fullchain.pem                        
+   Your key file has been saved at:
+   /etc/letsencrypt/live/mindfulbeauty.nz/privkey.pem                          
+   Your cert will expire on 2020-08-20. To obtain a new or tweaked             
+   version of this certificate in the future, simply run certbot again         
+   with the "certonly" option. To non-interactively renew *all* of             
+   your certificates, run "certbot renew"                                      
+ - Your account credentials have been saved in your Certbot                    
+   configuration directory at /etc/letsencrypt. You should make a              
+   secure backup of this folder now. This configuration directory will         
+   also contain certificates and private keys obtained by Certbot so           
+   making regular backups of this folder is ideal.       
+
+# test auto-renewal
+sudo certbot renew --dry-run
+# seems to work.  should verify renewal is set as a recurring job
+# need to fix nginx conf to redirect www.mindfulbeauty.nz to minfulbeauty.nz
+# systemctl list-timers
+
+#########################
+###  setup Wordpress  ###
+#########################
+
+sudo mariadb
+
+# set wordpress database to mindful_wp and admin user to mindful_wp_admin
+> CREATE DATABASE mindful_wp DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+# password on file
+> GRANT ALL ON mindful_wp.* TO 'mindful_wp_admin'@'localhost' IDENTIFIED BY 'password';
+
+> FLUSH PRIVILEGES;
+> EXIT;
+
+sudo apt update
+sudo apt install php-curl php-gd php-intl php-mbstring php-soap php-xml php-xmlrpc php-zip
+
+sudo systemctl restart php7.3-fpm.service
+
+sudo vim /etc/nginx/sites-available/mindfulbeauty
+
+# BEGIN ADD to /etc/nginx/sites-available/mindfulbeauty
+location = /favicon.ico { log_not_found off; access_log off; }
+location = /robots.txt { log_not_found off; access_log off; allow all; }
+location ~* \.(css|gif|ico|jpeg|jpg|js|png)$ {
+    expires max;
+    log_not_found off;
+}
+# END ADD to /etc/nginx/sites-available/mindfulbeauty
+
+# BEGIN EDIT to /etc/nginx/sites-available/mindfulbeauty
+location / {
+    #try_files $uri $uri/ =404;
+    try_files $uri $uri/ /index.php$is_args$args;
+}
+# END EDIT to /etc/nginx/sites-available/mindfulbeauty
+
+sudo nginx -t
+sudo systemctl reload nginx
+
+mkdir ~/wp_temp && cd ~/wp_temp
+curl -LO https://wordpress.org/latest.tar.gz
+tar xzvf latest.tar.gz
+cp ~/wp_temp/wordpress/wp-config-sample.php ~/wp_temp/wordpress/wp-config.php
+
+sudo cp -a ~/wp_temp/wordpress/. /var/www/mindfulbeauty
+sudo chown -R www-data:www-data /var/www/mindfulbeauty
+
+# copy values from this output into /var/www/mindfulbeauty/wp-config.php
+curl -s https://api.wordpress.org/secret-key/1.1/salt/
+sudo vim /var/www/mindfulbeauty/wp-config.php
+
+# edit /var/www/mindfulbeauty/wp-config.php
+define( 'DB_NAME', 'mindful_wp' );
+define( 'DB_USER', 'mindful_wp_admin' );
+define( 'DB_PASSWORD', 'password_here' );
+
+# add to /var/www/mindfulbeauty/wp-config.php
+define('FS_METHOD', 'direct');
+
+# visit https://mindfulbeauty.nz and setup
+
+https://mindfulbeauty.nz/wp-admin
+# setting->permalinks
+# appearance-> themes
+
+# https://wordpress.org/support/article/first-steps-with-wordpress/
+
+# install Woo
+# install piwik
+# configure email
+
+

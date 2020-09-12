@@ -35,8 +35,8 @@ apt autoremove
 # sudo apt install vim-tiny
 
 # add users
-sudo adduser jhancock
-sudo adduser jhancock sudo
+sudo adduser jon
+sudo adduser jon sudo
 sudo adduser mhd
 sudo adduser mhd sudo
 sudo adduser dev
