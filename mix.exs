@@ -44,7 +44,7 @@ defmodule Lov.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.2.0"},
+      {:plug_cowboy, "~> 2.3.0"},
       {:mojito, "~> 0.7.3"},
       {:mogrify, "~> 0.8.0"}
     ]
