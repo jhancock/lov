@@ -39,6 +39,10 @@ defmodule Kite.Postcard do
     send(filename, address, message, api_mode)
   end
 
+  def test_send_lotus() do
+    test_send("lotus.jpg")
+  end
+
   def test_send_seagull() do
     test_send("seagull.jpg")
   end

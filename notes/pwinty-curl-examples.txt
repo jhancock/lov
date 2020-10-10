@@ -1,0 +1,14 @@
+work in progress.
+not sure I can use this api as it requires too much effort for a postcard image
+
+https://api.pwinty.com/v3.0/catalogue/prodigi%20direct/destination/us/prices
+
+curl -v -X POST "https://api.pwinty.com/v3.0/catalogue/prodigi%20direct/destination/us/prices" \
+    -H "X-Pwinty-MerchantId: 8ed33311-0aa9-4cf3-8f23-73da531f5ad5" \
+    -H "X-Pwinty-REST-API-Key: 6bd5f780-e864-4da9-99ff-8e6ac60e8075" 
+
+  
+sku   GLOBAL-POST-MOH-6X4
+Recommended size:
+3710x1265px (300dpi)
+
