@@ -3,7 +3,10 @@
 ##################################
 
 https://tailwindcss.com/docs/installation
-https://tailwindui.com/
+https://tailwindui.com/documentation
+
+npm install tailwindcss@latest --save
+npm install @tailwindcss/ui --save
 
 # useful. however, in postcss.config.js there is a line "...process.env.NODE_ENV=== 'production'"
 # this test does not work unless we set the NODE_ENV variable
