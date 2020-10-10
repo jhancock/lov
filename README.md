@@ -15,8 +15,11 @@ To start your Phoenix server:
     # Initial setup
       $ mix deps.get --only prod
 
+
       # generate SECRET_KEY_BASE with > mix phx.gen.secret
       $ MIX_ENV=prod DATABASE_URL=ecto://postgres:postgres@localhost/lov_prod SECRET_KEY_BASE=PExlxXy4G17c3Zx/VfYw+cT/oS0l9C8VoaFT2yzsIAdDM1d2zulFQQuCEkUChAji mix compile 
+      # for fish shell, prefix with 'env'
+      $ env MIX_ENV=prod DATABASE_URL=ecto://postgres:postgres@localhost/lov_prod SECRET_KEY_BASE=PExlxXy4G17c3Zx/VfYw+cT/oS0l9C8VoaFT2yzsIAdDM1d2zulFQQuCEkUChAji mix compile 
       $ MIX_ENV=prod mix compile
 
       # Compile assets - MUST set NODE_ENV=production
