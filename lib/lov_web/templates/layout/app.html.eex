@@ -12,10 +12,14 @@
   </head>
   <body>
     <main id="main" role="main">
-      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-        <%= @inner_content %>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- We've used 3xl here, but feel free to try other max-widths based on your needs -->
+        <div class="max-w-3xl mx-auto">
+          <p class="mt-2 text-sm text-green-600" role="alert"><%= get_flash(@conn, :info) %></p>
+          <p class="mt-2 text-sm text-red-600" role="alert"><%= get_flash(@conn, :error) %></p>
+          <!-- Content goes here -->
+          <%= @inner_content %>
+        </div>
       </div>
     </main>
   </body>

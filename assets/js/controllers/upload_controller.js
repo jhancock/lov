@@ -79,8 +79,6 @@ export default class extends Controller {
   }
 
   fileSelected(event) {
-    console.log("uppy be...", this.uppy)
-
     const files = Array.from(event.target.files)
     console.log("file selected", files)
 
