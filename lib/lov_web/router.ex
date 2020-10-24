@@ -4,7 +4,8 @@ defmodule LovWeb.Router do
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
-    plug :fetch_flash
+    plug :fetch_live_flash
+    plug :put_root_layout, {LovWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug LovWeb.EnsureUserPlug
@@ -22,22 +23,27 @@ defmodule LovWeb.Router do
   scope "/", LovWeb do
     pipe_through :browser
 
-    # get "/", PageController, :index
+    # live "/", PageLive, :index
+    
+    # this is the work in progress of lov.is before liveview
     get "/", PostcardController, :index
     # get "/", UppyTestController, :simple_stimulus
+
+    # this is the original PageController
+    # get "/", PageController, :index
 
     # get "/uppy-test/dashboard-tus-io", UppyTestController, :dashboard_tus_io
     # get "/uppy-test/simple-tus-io", UppyTestController, :simple_tus_io
     # get "/uppy-test/simple-lov-is", UppyTestController, :simple_lov_is
-    get "/uppy-test/simple-stimulus", UppyTestController, :simple_stimulus
+    # get "/uppy-test/simple-stimulus", UppyTestController, :simple_stimulus
 
     # get "/spicyplant51/:file_name", UploadController, :spicyplant51
     
-    resources "/uploads", UploadController, only: [:index, :create, :show] do
-      get "/thumbnail", UploadController, :thumbnail, as: "thumbnail"
-      get "/original", UploadController, :original, as: "original"
-      get "/kite", UploadController, :original, as: "kite"
-    end    
+    # resources "/uploads", UploadController, only: [:index, :create, :show] do
+    #   get "/thumbnail", UploadController, :thumbnail, as: "thumbnail"
+    #   get "/original", UploadController, :original, as: "original"
+    #   get "/kite", UploadController, :original, as: "kite"
+    # end    
   end
 
   # Other scopes may use custom stacks.
