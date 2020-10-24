@@ -14,7 +14,7 @@
     "@tailwindcss/ui": "^0.6.2",
     "tailwindcss": "^1.8.13",
     "uppy": "^1.13.2",
-    "stimulus": "^1.1.1",
+    "stimulus": "^1.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

@@ -23,14 +23,14 @@ defmodule LovWeb.Router do
   scope "/", LovWeb do
     pipe_through :browser
 
-    live "/", PageLive, :index
-    
-    # before liveliew, this is the original PageController
-    # get "/", PageController, :index
+    # live "/", PageLive, :index
     
     # this is the work in progress of lov.is before liveview
-    # get "/", PostcardController, :index
+    get "/", PostcardController, :index
     # get "/", UppyTestController, :simple_stimulus
+
+    # this is the original PageController
+    # get "/", PageController, :index
 
     # get "/uppy-test/dashboard-tus-io", UppyTestController, :dashboard_tus_io
     # get "/uppy-test/simple-tus-io", UppyTestController, :simple_tus_io
