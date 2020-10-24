@@ -9,3 +9,6 @@
 
 /* add custom css at the END */
 /* @import "./custom-styles.css"; */
+
+/* copied from newly created phx app (app.scss) with liveview settings */
+@import "./phoenix-app.css";
