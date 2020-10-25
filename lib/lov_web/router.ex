@@ -23,10 +23,13 @@ defmodule LovWeb.Router do
   scope "/", LovWeb do
     pipe_through :browser
 
+    live "/", PostcardLive, :index
+
+    # original liveview
     # live "/", PageLive, :index
-    
+
     # this is the work in progress of lov.is before liveview
-    get "/", PostcardController, :index
+    # get "/", PostcardController, :index
     # get "/", UppyTestController, :simple_stimulus
 
     # this is the original PageController
@@ -38,12 +41,12 @@ defmodule LovWeb.Router do
     # get "/uppy-test/simple-stimulus", UppyTestController, :simple_stimulus
 
     # get "/spicyplant51/:file_name", UploadController, :spicyplant51
-    
+
     # resources "/uploads", UploadController, only: [:index, :create, :show] do
     #   get "/thumbnail", UploadController, :thumbnail, as: "thumbnail"
     #   get "/original", UploadController, :original, as: "original"
     #   get "/kite", UploadController, :original, as: "kite"
-    # end    
+    # end
   end
 
   # Other scopes may use custom stacks.
