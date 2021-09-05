@@ -21,7 +21,10 @@ defmodule LovWeb.PostcardLive do
               <span class="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition duration-150 ease-in-out">
                 Upload a Photo
               </span>
-              <input type="file" accept="image/jpeg" data-action="change->upload#fileSelected" class="hidden" />
+              <input id="file-input"
+                      phx-hook="Uploader"
+                      type="file" accept="image/jpeg" class="hidden"
+              />
             </p>
           </div>
         </label>
