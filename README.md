@@ -17,9 +17,9 @@ To start your Phoenix server:
 
 
       # generate SECRET_KEY_BASE with > mix phx.gen.secret
-      $ MIX_ENV=prod DATABASE_URL=ecto://postgres:postgres@localhost/lov_prod SECRET_KEY_BASE=PExlxXy4G17c3Zx/VfYw+cT/oS0l9C8VoaFT2yzsIAdDM1d2zulFQQuCEkUChAji mix compile 
+      $ MIX_ENV=prod DATABASE_URL=ecto://postgres:postgres@localhost/lov_prod SECRET_KEY_BASE=P<<key>>>> mix compile 
       # for fish shell, prefix with 'env'
-      $ env MIX_ENV=prod DATABASE_URL=ecto://postgres:postgres@localhost/lov_prod SECRET_KEY_BASE=PExlxXy4G17c3Zx/VfYw+cT/oS0l9C8VoaFT2yzsIAdDM1d2zulFQQuCEkUChAji mix compile 
+      $ env MIX_ENV=prod DATABASE_URL=ecto://postgres:postgres@localhost/lov_prod SECRET_KEY_BASE=<<key>> mix compile 
       $ MIX_ENV=prod mix compile
 
       # Compile assets - MUST set NODE_ENV=production
@@ -28,10 +28,10 @@ To start your Phoenix server:
 
       # Custom tasks (like DB migrations)
       # call mix exto.setup or mix ecto.migrate
-      $ MIX_ENV=prod DATABASE_URL=ecto://postgres:postgres@localhost/lov_prod SECRET_KEY_BASE=PExlxXy4G17c3Zx/VfYw+cT/oS0l9C8VoaFT2yzsIAdDM1d2zulFQQuCEkUChAji mix ecto.migrate
+      $ MIX_ENV=prod DATABASE_URL=ecto://postgres:postgres@localhost/lov_prod SECRET_KEY_BASE=<<key>> mix ecto.migrate
 
       # Finally run the server
-       $ MIX_ENV=prod PORT=4001 DATABASE_URL=ecto://postgres:postgres@localhost/lov_prod SECRET_KEY_BASE=PExlxXy4G17c3Zx/VfYw+cT/oS0l9C8VoaFT2yzsIAdDM1d2zulFQQuCEkUChAji mix phx.server
+       $ MIX_ENV=prod PORT=4001 DATABASE_URL=ecto://postgres:postgres@localhost/lov_prod SECRET_KEY_BASE=<<key>> mix phx.server
 
       $ PORT=4001 MIX_ENV=prod mix phx.server
 
